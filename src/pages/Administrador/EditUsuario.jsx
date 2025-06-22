@@ -14,7 +14,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React,{ useEffect, useState } from "react";
+import { useParams,useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
+
 
 // In a real implementation, these would be imported from your assets
 // Using placeholder URLs for demonstration
@@ -23,24 +26,86 @@ const avatarImage = "image-3.png";
 const carImage = "MIAUTOGDL-79-876x535-2.png";
 
 const EdicionDeUsuarios = () => {
-  // User data
-  const userData = {
-    name: "Luis David Martínez Martínez",
-    boleta: "2022630175",
-    phone: "9711275226",
-    email: "9711275226",
+  const { id } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [vehicleData, setVehicleData] = useState([]);
+  const navigate = useNavigate();
+  const [nombre, setNombre] = useState("");
+  const [boleta, setBoleta] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [correo, setCorreo] = useState("");
+
+  useEffect(() => {
+    const fetchUsuario = async () => {
+      const { data, error } = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("id_usuario", id)
+        .single();
+
+      if (error) {
+        console.error("Error al obtener usuario:", error.message);
+      } else {
+        setUserData(data);
+        setNombre(data.nombres || "");
+        setBoleta(data.id_usuario || "");
+        setTelefono(data.telefono || "");
+        setCorreo(data.correo_institucional || "");
+      }
+    };
+
+    const fetchVehiculos = async () => {
+      const { data, error } = await supabase
+        .from("vehiculos")
+        .select("*")
+        .eq("id_usuario", id); 
+
+      if (error) {
+        console.error("Error al obtener vehículos:", error.message);
+      } else {
+        setVehicleData(data);
+      }
+    };
+
+    fetchUsuario();
+    fetchVehiculos();
+  }, [id]);
+   const handleEliminarUsuario = async () => {
+    const confirmacion = window.confirm(
+      `¿Estás seguro de que deseas eliminar al usuario "${userData.nombres}"?`
+    );
+
+    if (!confirmacion) return;
+
+    const { error } = await supabase
+      .from("usuarios")
+      .delete()
+      .eq("id_usuario", id);
+
+    if (error) {
+      alert("Hubo un error al eliminar el usuario: " + error.message);
+    } else {
+      alert("Usuario eliminado correctamente.");
+      navigate("/Usuarios"); 
+    }
   };
+  const handleGuardarUsuario = async () => {
+    const { error } = await supabase
+      .from("usuarios")
+      .update({
+        nombres: nombre,
+        id_usuario: boleta,
+        correo_institucional: correo,
+      })
+      .eq("id_usuario", id); 
 
-  // Vehicle data
-  const vehicleData = [
-    {
-      id: "TKM2ICKKCK",
-      model: "Chevrolet Aveo 2015",
-      color: "PLATEADO",
-      image: carImage,
-    },
-  ];
-
+    if (error) {
+      alert("Error al guardar los cambios: " + error.message);
+    } else {
+      alert("Usuario actualizado correctamente.");
+      navigate("/Usuarios");
+    }
+  };
   return (
     <Box
       sx={{
@@ -158,10 +223,12 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.name}
+                
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
               />
             </Box>
 
@@ -179,7 +246,8 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.boleta}
+                value={boleta}
+                onChange={(e) => setBoleta(e.target.value)}
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
@@ -200,7 +268,8 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.phone}
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
@@ -221,7 +290,8 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.email}
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
@@ -351,6 +421,7 @@ const EdicionDeUsuarios = () => {
                   bgcolor: "#007a8a",
                 },
               }}
+              onClick={handleGuardarUsuario}
             >
               Guardar
             </Button>
@@ -370,6 +441,7 @@ const EdicionDeUsuarios = () => {
                   bgcolor: "#5c0159",
                 },
               }}
+              onClick={handleEliminarUsuario}
             >
               Eliminar
             </Button>

@@ -3,6 +3,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
+import { supabase } from '../../supabaseClient'
+import { useNavigate } from "react-router-dom";
 import {
   Autocomplete,
   Box,
@@ -15,27 +17,27 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React,{ useEffect, useState }   from "react";
 
-const userData = [
-  {
-    id: "2022630175",
-    name: "David Martínez",
-    vehicles: 1,
-  },
-  {
-    id: "2022630175",
-    name: "David Martínez",
-    vehicles: 1,
-  },
-  {
-    id: "2022630175",
-    name: "David Martínez",
-    vehicles: 1,
-  },
-];
+
 
 const PantallaGestionDe = () => {
+  const [userData, setUserData] = useState([]);
+    useEffect(() => {
+    const fetchUsuarios = async () => {
+      const { data, error } = await supabase.from("usuarios").select("*");
+      console.log("DATA:", data);
+      console.log("ERROR:", error);
+      if (error) {
+        console.error("Error al cargar usuarios:", error.message);
+      } else {
+        setUserData(data);
+      }
+    };
+
+    fetchUsuarios();
+  }, []);
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -230,7 +232,7 @@ const PantallaGestionDe = () => {
                     fontSize: "13px",
                   }}
                 >
-                  {user.name}
+                  {user.nombres}
                 </Typography>
                 <Typography
                   sx={{
@@ -239,7 +241,7 @@ const PantallaGestionDe = () => {
                     fontSize: "8px",
                   }}
                 >
-                  {user.id}
+                  {user.id_usuario}
                 </Typography>
                 <Typography
                   sx={{
@@ -264,6 +266,7 @@ const PantallaGestionDe = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onClick={() => navigate(`/EditUsuario/${user.id_usuario}`)}
             >
               <EditIcon sx={{ color: "white", width: 36, height: 33 }} />
             </Card>

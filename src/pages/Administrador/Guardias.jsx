@@ -1,4 +1,7 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
 import {
   Avatar,
   Box,
@@ -28,18 +31,57 @@ const formFields = [
     placeholder: "Ingresa el apellido materno",
   },
   {
-    id: "phoneNumber",
-    label: "Numero telefónico",
-    placeholder: "Ingresa el número telefónico",
+    id: "correo",
+    label: "Correo",
+    placeholder: "Ingresa el correo electronico",
   },
   {
     id: "idNumber",
     label: "Numero id O cédula",
     placeholder: "Ingresa la cédula de identificación",
   },
+  {
+    id: "password",
+    label: "paswword",
+    placeholder: "Ingresa la contraseña",
+  },
 ];
 
 const RegistroDePolicias = () => {
+  const [formData, setFormData] = useState({
+    tipo_usuario : "Policia",
+    name: "",
+    paternalLastName: "",
+    maternalLastName: "",
+    correo: "",
+    idNumber: "",
+    password:""
+  });
+  const handleRegister = async () => {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.correo,
+      password: formData.password,
+      options: {
+        data: {
+          tipo_usuario: formData.tipo_usuario, 
+          nombres: formData.name,
+          apellido_paterno: formData.paternalLastName,
+          apellido_materno: formData.maternalLastName,
+          numero_boleta: formData.tipoUsuario === "Estudiante" ? boleta : null,
+          carrera: formData.tipoUsuario === "Estudiante" ? career : null,  
+        },
+      },
+    });
+  
+    if (error) {
+      console.error("Error al registrar usuario:", error.message);
+      alert("Error al registrar: " + error.message);
+    } else {
+      alert("Registro exitoso. Revisa tu correo para confirmar la cuenta.");
+      
+    }
+  };
+  const navigate = useNavigate();
   return (
     <Box sx={{ display: "flex", justifyContent: "center", bgcolor: "white" }}>
       <Container
@@ -178,6 +220,7 @@ const RegistroDePolicias = () => {
               fontSize: "16px",
               boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
             }}
+            onClick={handleRegister}
           >
             Registrar
           </Button>

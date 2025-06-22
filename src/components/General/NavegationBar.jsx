@@ -8,11 +8,19 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const tabs = [
-  { label: "Inicio", icon: <HomeIcon />, path: "/Home" },
-  { label: "Vehículos", icon: <DirectionsCarIcon />, path: "/vehiculos" },
-  { label: "E/S", icon: <VpnKeyIcon />, path: "/Acceso" },
-  { label: "Mi status", icon: <BarChartIcon />, path: "/status" },
-  { label: "Perfil", icon: <PersonIcon />, path: "/Profile" },
+  { label: "Inicio", icon: <HomeIcon />, paths: ["/Home"] },
+  {
+    label: "Vehículos",
+    icon: <DirectionsCarIcon />,
+    paths: ["/vehiculos", "/AddVehiculo"],
+  },
+  { label: "E/S", icon: <VpnKeyIcon />, paths: ["/Acceso"] },
+  { label: "Mi status", icon: <BarChartIcon />, paths: ["/status"] },
+  {
+    label: "Perfil",
+    icon: <PersonIcon />,
+    paths: ["/Profile", "/EditProfile"],
+  },
 ];
 
 const NavegationBar = () => {
@@ -20,7 +28,9 @@ const NavegationBar = () => {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    const index = tabs.findIndex((tab) => tab.path === location.pathname);
+    const index = tabs.findIndex((tab) =>
+      tab.paths.includes(location.pathname)
+    );
     if (index !== -1) {
       setValue(index);
     }
@@ -48,7 +58,7 @@ const NavegationBar = () => {
             label={tab.label}
             icon={tab.icon}
             component={Link}
-            to={tab.path}
+            to={tab.paths[0]}
             sx={{
               color: "white",
               "&.Mui-selected": {

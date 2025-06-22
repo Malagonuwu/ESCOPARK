@@ -7,17 +7,20 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 
+// Icons
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import StarIcon from "@mui/icons-material/Star";
 import EmailIcon from "@mui/icons-material/Email";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
-import ProfileInfoItem from "./Datos";
 import ProfileImage from "../../assets/profile.jpg";
+
+// Components
+import ProfileInfoItem from "./Datos";
+import CustomeButton from "../General/CustomButton";
 
 const initialUserData = {
   name: "Ale Villegas",
@@ -160,26 +163,19 @@ const ProfileBox = () => {
             display: "flex",
             justifyContent: "flex-end",
             width: "100%",
-            mt: 2,
-            mb: 4,
+            my: 2,
+            mr: 8,
           }}
         >
-          <Link to="/EditProfile">
-            <Button
-              variant="contained"
-              sx={{
-                bgcolor: "#002250",
-                fontWeight: 600,
-                fontFamily: "'Orbitron', sans-serif",
-                fontSize: 15,
-                height: 40,
-                mr: 5,
-                "&:hover": { bgcolor: "#0090a4" },
-              }}
-            >
-              Editar
-            </Button>
-          </Link>
+          <CustomeButton
+            to={"/EditProfile"}
+            name={"Editar"}
+            sx={{
+              ":hover": {
+                bgcolor: "#0090A4",
+              },
+            }}
+          />
         </Box>
       </Card>
     </Box>

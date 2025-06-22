@@ -16,6 +16,9 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
 import ProfileImage from "../../assets/profile.jpg";
 
+//components
+import CustomeButton from "../General/CustomButton";
+
 const EditProfileBox = () => {
   const fileInputRef = useRef(null);
 
@@ -322,43 +325,26 @@ const EditProfileBox = () => {
         </Box>
 
         {/* Buttons */}
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 2, my: 4 }}>
-          <Button
-            variant="contained"
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 2, my: 3 }}>
+          <CustomeButton
+            to={"/Profile"}
+            name={"Cancelar"}
             sx={{
-              backgroundColor: "#444444",
-              borderRadius: "8px",
-              fontFamily: "Orbitron-Bold, Helvetica",
-              fontWeight: "bold",
-              fontSize: "16px",
-              width: 100,
-              height: 31,
+              fontFamily: "'Inter', sans-serif",
               textTransform: "none",
-              "&:hover": {
-                backgroundColor: "#333333",
-              },
+              "&:hover": { bgcolor: "grey" },
             }}
-          >
-            Cancelar
-          </Button>
-          <Button
-            variant="contained"
+          />
+          <CustomeButton
+            to={"/Profile"}
+            name={"Aceptar"}
             sx={{
+              fontFamily: "'Inter', sans-serif",
+              textTransform: "none",
               backgroundColor: "#002250",
-              borderRadius: "8px",
-              fontFamily: "Orbitron-Bold, Helvetica",
-              fontWeight: "bold",
-              fontSize: "16px",
-              width: 100,
-              height: 31,
-              textTransform: "none",
-              "&:hover": {
-                backgroundColor: "#001a3c",
-              },
+              "&:hover": { bgcolor: "#0090a4" },
             }}
-          >
-            Guardar
-          </Button>
+          />
         </Box>
       </Card>
     </Box>

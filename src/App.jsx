@@ -42,7 +42,7 @@ export default function App() {
         {/* Rutas de administrador */}
         <Route path="/Estacionamientos" element={<Estacionamientos />} />
         <Route path="/AddEstacionamiento" element={<AddEstacionamiento />} />
-        <Route path="/EditUsuario" element={<EditUsuario />} />
+        <Route path="/EditUsuario/:id" element={<EditUsuario />} />
         <Route path="/Guardias" element={<Guardias />} />
         <Route path="/Usuarios" element={<Usuarios />} />
 

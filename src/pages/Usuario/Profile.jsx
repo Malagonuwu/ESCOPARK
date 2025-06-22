@@ -26,7 +26,6 @@ const Profile = () => {
         flexDirection: "column",
         justifyContent: "space-between",
         backgroundColor: "white",
-        position: "relative",
       }}
     >
       {/* Header y perfil */}

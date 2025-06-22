@@ -1,7 +1,7 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { useState } from "react";
 
-//imgs vehículos provisionales
+//imgs
 import Avatar from "../../assets/logo.jpg";
 
 // Componentes
@@ -78,6 +78,17 @@ const Vehículos = () => {
           alignItems: "center",
         }}
       >
+        <Typography
+          sx={{
+            width: "85%",
+            fontFamily: "Inter, Helvetica",
+            textAlign: "center",
+            fontSize: "14px",
+          }}
+        >
+          Vehículos registrados, seleccione alguno para ver su información
+        </Typography>
+
         {vehiculos.map((v, i) => (
           <Vehiculo
             key={i}

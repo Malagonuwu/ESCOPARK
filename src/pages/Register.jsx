@@ -3,7 +3,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -27,8 +27,12 @@ import fondo from "../assets/Cel.jpg";
 // Componentes
 import Title from "../components/General/Title";
 import CustomButton from "../components/General/CustomButton";
+import Condiciones from "../components/Login/Condiciones";
+import AcceptModal from "../components/General/AcceptModal";
 
 const Register = () => {
+  const navigate = useNavigate();
+
   // Estados
   const [nombre, setNombre] = useState("");
   const [errorNombre, setErrorNombre] = useState(false);
@@ -46,8 +50,10 @@ const Register = () => {
 
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
 
   // Validación nombre
   const handleNombreChange = (e) => {
@@ -81,11 +87,15 @@ const Register = () => {
 
   // Toggle visibilidad contraseña
   const toggleShowPassword = () => setShowPassword((show) => !show);
+  const toggleShowConfirm = () => setShowConfirm((show) => !show);
 
   // Manejar archivo comprobante
   const handleFileChange = (e) => {
     setComprobante(e.target.files[0]);
   };
+
+  //Terminos y condiciones
+  const [openTerms, setOpenTerms] = useState(false);
 
   return (
     <Container
@@ -536,7 +546,7 @@ const Register = () => {
                 </Typography>
                 <TextField
                   name="confirmPassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showConfirm ? "text" : "password"}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       height: "34px",
@@ -560,8 +570,8 @@ const Register = () => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton onClick={toggleShowPassword} edge="end">
-                          {showPassword ? (
+                        <IconButton onClick={toggleShowConfirm} edge="end">
+                          {showConfirm ? (
                             <VisibilityIcon sx={{ width: 20, height: 20 }} />
                           ) : (
                             <VisibilityOffIcon sx={{ width: 20, height: 20 }} />
@@ -588,30 +598,36 @@ const Register = () => {
             </Box>
 
             {/* Términos y condiciones */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={acceptTerms}
-                  onChange={(e) => setAcceptTerms(e.target.checked)}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Checkbox
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                sx={{
+                  color: "white",
+                  "&.Mui-checked": {
+                    color: "#770275",
+                  },
+                }}
+              />
+              <Typography sx={{ fontSize: 12, color: "white", opacity: 0.7 }}>
+                Acepto los{" "}
+                <Box
+                  component="span"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenTerms(true);
+                  }}
                   sx={{
                     color: "white",
-                    "&.Mui-checked": {
-                      color: "#770275",
-                    },
+                    textDecoration: "underline",
+                    cursor: "pointer",
                   }}
-                />
-              }
-              label={
-                <Typography sx={{ fontSize: 12, color: "white", opacity: 0.7 }}>
-                  Acepto los{" "}
-                  <Link href="#" underline="always" sx={{ color: "white" }}>
-                    términos y condiciones
-                  </Link>
-                  .
-                </Typography>
-              }
-              sx={{ mb: 1 }}
-            />
+                >
+                  términos y condiciones
+                </Box>
+                .
+              </Typography>
+            </Box>
           </Box>
 
           {/* Botón y enlace final */}
@@ -634,6 +650,7 @@ const Register = () => {
                 errorPassword ||
                 errorConfirmPassword
               }
+              onClick={() => setShowAcceptModal(true)}
             />
 
             {/* Link a Login */}
@@ -671,6 +688,35 @@ const Register = () => {
           }}
         />
       </Box>
+
+      <Condiciones open={openTerms} onClose={() => setOpenTerms(false)} />
+
+      {showAcceptModal && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            bgcolor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 10,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <AcceptModal
+            title="¡Registro exitoso!"
+            description="Bienvenido, tu cuenta ha sido registrada correctamente."
+            label="Aceptar"
+            onConfirm={() => {
+              setShowAcceptModal(false);
+              navigate("/login");
+            }}
+          />
+        </Box>
+      )}
     </Container>
   );
 };

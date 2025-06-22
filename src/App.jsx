@@ -12,6 +12,7 @@ import EditProfile from "./pages/Usuario/EditProfile";
 import Acceso from "./pages/Usuario/Acceso";
 import Salida from "./pages/Usuario/Salida";
 import Vehículos from "./pages/Usuario/Vehículos";
+import AddVehiculo from "./pages/Usuario/AddVehiculo";
 
 /* Importación de páginas de administrador */
 import Estacionamientos from "./pages/Administrador/Estacionamientos";
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/Acceso" element={<Acceso />} />
         <Route path="/Salida" element={<Salida />} />
         <Route path="/vehiculos" element={<Vehículos />} />
+        <Route path="/AddVehiculo" element={<AddVehiculo />} />
 
         {/* Rutas de administrador */}
         <Route path="/Estacionamientos" element={<Estacionamientos />} />

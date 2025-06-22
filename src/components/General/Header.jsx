@@ -69,7 +69,7 @@ const Header = ({
               },
             }}
           >
-            {/* Imagen del avatar */}
+            {/* avatar */}
             <Box
               component="img"
               src={avatar || perfil}

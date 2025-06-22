@@ -1,33 +1,37 @@
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardContent,
   Container,
-  Divider,
-  IconButton,
   Typography,
 } from "@mui/material";
 
-// Imagenes
-import fondo from "../../assets/back.png";
-
 //Components
 import Header from "../../components/General/Header";
+import NavegationBar from "../../components/General/AdminNav";
+import NewButton from "../../components/General/CustomButton";
 
 // Mock data for parking spaces
 const parkingSpaces = [
   {
     id: 1,
-    name: "Motocicletas",
+    name: "Motocicletas A",
     available: 10,
   },
   {
     id: 2,
+    name: "Motocicletas B",
+    available: 10,
+  },
+  {
+    id: 3,
     name: "Vehículos A",
+    available: 10,
+  },
+  {
+    id: 4,
+    name: "Vehículos B",
     available: 10,
   },
 ];
@@ -35,13 +39,11 @@ const parkingSpaces = [
 const Estacionamientos = () => {
   return (
     <Container
-      disableGutters
       sx={{
         width: "412px",
-        minHeight: "100vh",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         backgroundColor: "white",
       }}
     >
@@ -51,36 +53,22 @@ const Estacionamientos = () => {
         userName="Administrador"
         showAvatar={false}
         backgroundColor="rgba(119, 2, 117, 0.77)"
-        backgroundImage={fondo}
       />
 
       {/* Main Content */}
       <Box sx={{ px: 2, mt: 2 }}>
-        <Typography
-          variant="h6"
-          sx={{
-            fontFamily: "Orbitron-Bold, Helvetica",
-            fontWeight: "bold",
-            mb: 1,
-          }}
-        >
-          Gestión de estacionamientos
-        </Typography>
-
-        <Divider sx={{ mb: 3 }} />
-
         {/* Parking Spaces List */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {parkingSpaces.map((space) => (
             <Card
               key={space.id}
               sx={{
-                borderRadius: "13px",
+                borderRadius: "4px",
                 boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
                 border: "0.1px solid rgba(0, 0, 0, 0.5)",
               }}
             >
-              <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+              <CardContent sx={{ p: 2 }}>
                 <Box
                   sx={{
                     display: "flex",
@@ -90,7 +78,7 @@ const Estacionamientos = () => {
                 >
                   <Typography
                     sx={{
-                      fontFamily: "Orbitron-Bold, Helvetica",
+                      fontFamily: "Inter, Sans-Serif",
                       fontWeight: "bold",
                     }}
                   >
@@ -100,17 +88,13 @@ const Estacionamientos = () => {
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography
                       sx={{
-                        fontFamily: "Orbitron-Regular, Helvetica",
+                        fontFamily: "Orbitron, Sans-Serif",
                         fontSize: "11px",
                         mr: 2,
                       }}
                     >
                       Disponible: {space.available}
                     </Typography>
-
-                    <IconButton size="small">
-                      <MoreVertIcon />
-                    </IconButton>
                   </Box>
                 </Box>
               </CardContent>
@@ -118,42 +102,11 @@ const Estacionamientos = () => {
           ))}
         </Box>
 
-        {/* Create New Parking Button */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 20,
-          }}
-        >
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "#770275",
-              borderRadius: "13px",
-              textTransform: "none",
-              py: 1.5,
-              px: 3,
-              boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
-              border: "0.1px solid rgba(0, 0, 0, 0.5)",
-              "&:hover": {
-                bgcolor: "#5c0159",
-              },
-            }}
-          >
-            <Typography
-              sx={{
-                fontFamily: "Orbitron-Bold, Helvetica",
-                fontWeight: "bold",
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              Crear nuevo estacionamiento
-            </Typography>
-          </Button>
-        </Box>
+        {/* Botón nuevo estacionamiento */}
       </Box>
+
+      {/*Navbar*/}
+      <NavegationBar />
     </Container>
   );
 };

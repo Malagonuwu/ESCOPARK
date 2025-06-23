@@ -1,26 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   Box, 
-  Button, 
+  Card, 
+  Avatar, 
+  IconButton, 
   TextField, 
+  Typography, 
+  FormControl, 
   Select, 
   MenuItem, 
-  InputLabel, 
-  FormControl, 
-  CircularProgress,
-  Typography,
-  Avatar,
-  IconButton,
-  Card,
-  CardContent
+  CircularProgress
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { DirectionsCar, TwoWheeler, Save, Cancel, AddAPhoto } from "@mui/icons-material";
+import { DirectionsCar, TwoWheeler, CameraAlt } from "@mui/icons-material";
 import { supabase } from "../../supabaseClient";
+
+// Componentes
+import CustomButton from "../../components/General/CustomButton";
 
 const EditVehicle = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
@@ -153,7 +154,13 @@ const EditVehicle = () => {
 
   if (loading && !form.tipo_vehiculo) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <Box sx={{ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        height: "100vh",
+        backgroundColor: "white"
+      }}>
         <CircularProgress />
       </Box>
     );
@@ -161,158 +168,241 @@ const EditVehicle = () => {
 
   if (error) {
     return (
-      <Box sx={{ p: 3, textAlign: "center" }}>
+      <Box sx={{ 
+        p: 3, 
+        textAlign: "center",
+        backgroundColor: "white",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+      }}>
         <Typography color="error">{error}</Typography>
-        <Button 
-          variant="contained" 
-          sx={{ mt: 2 }}
+        <CustomButton 
+          name="Volver a Vehículos"
           onClick={() => navigate("/vehiculos")}
-        >
-          Volver a Vehículos
-        </Button>
+          sx={{ mt: 2 }}
+        />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Card sx={{ mb: 3, borderRadius: 2 }}>
-        <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Box sx={{ position: "relative", mb: 2 }}>
-            <Avatar
-              variant="rounded"
-              src={form.foto_vehiculo}
-              sx={{ 
-                width: 120, 
-                height: 90, 
-                bgcolor: "grey.100",
-              }}
-            >
-              {!form.foto_vehiculo && getVehicleIcon(form.tipo_vehiculo)}
-            </Avatar>
-            <IconButton
-              component="label"
-              sx={{
-                position: "absolute",
-                bottom: -8,
-                right: -8,
-                bgcolor: "primary.main",
-                color: "white",
-                "&:hover": {
-                  bgcolor: "primary.dark"
-                }
-              }}
-              size="small"
-              disabled={uploading}
-            >
-              {uploading ? <CircularProgress size={20} color="inherit" /> : <AddAPhoto fontSize="small" />}
-              <input 
-                type="file" 
-                accept="image/*" 
-                hidden 
-                onChange={handleFotoChange} 
-              />
-            </IconButton>
-          </Box>
-          <Typography variant="h6" fontWeight="bold">
+    <Box sx={{ 
+      width: "80%", 
+      position: "relative", 
+      top: "70px", 
+      left: "10%",
+      mb: 4
+    }}>
+      <Card
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          borderRadius: "5px",
+          border: "0.5px solid",
+          borderColor: "grey.300",
+          boxShadow: "inset 0px 4px 4px rgba(0, 0, 0, 0.65)",
+          overflow: "visible",
+          pt: 6,
+        }}
+      >
+        {/* Foto vehículo + botón para cambiar */}
+        <Box sx={{ position: "absolute", top: -50 }}>
+          <Avatar
+            src={form.foto_vehiculo}
+            sx={{
+              width: 100,
+              height: 100,
+              bgcolor: "grey.100"
+            }}
+            variant="rounded"
+          >
+            {!form.foto_vehiculo && getVehicleIcon(form.tipo_vehiculo)}
+          </Avatar>
+          <IconButton
+            sx={{
+              position: "absolute",
+              bottom: -8,
+              right: -1,
+              backgroundColor: "#002250",
+              width: 38,
+              height: 38,
+              border: "2.5px solid white",
+              "&:hover": {
+                backgroundColor: "#0090A4",
+              },
+            }}
+            onClick={() => fileInputRef.current.click()}
+            disabled={uploading}
+          >
+            {uploading ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <CameraAlt sx={{ color: "white", fontSize: 20 }} />
+            )}
+          </IconButton>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFotoChange}
+            style={{ display: "none" }}
+          />
+        </Box>
+
+        {/* Campos del formulario */}
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            width: "100%",
+            px: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontFamily: "'Audiowide', sans-serif",
+              mb: 2,
+              textAlign: "center"
+            }}
+          >
             Editando: {form.marca} {form.modelo}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Placas: {form.placas}
-          </Typography>
-        </CardContent>
-      </Card>
 
-      <Box 
-        component="form" 
-        onSubmit={handleSubmit}
-        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-      >
-        <FormControl fullWidth required>
-          <InputLabel>Tipo de Vehículo</InputLabel>
-          <Select
-            name="tipo_vehiculo"
-            value={form.tipo_vehiculo}
-            onChange={handleChange}
-            label="Tipo de Vehículo"
-          >
-            <MenuItem value="Auto">Auto</MenuItem>
-            <MenuItem value="Moto">Moto</MenuItem>
-          </Select>
-        </FormControl>
+          {[
+            {
+              label: "Placas",
+              name: "placas",
+              value: form.placas,
+              placeholder: "Ejemplo: XYZ-1234"
+            },
+            {
+              label: "Marca",
+              name: "marca",
+              value: form.marca,
+              placeholder: "Marca"
+            },
+            {
+              label: "Modelo",
+              name: "modelo",
+              value: form.modelo,
+              placeholder: "Modelo"
+            },
+            {
+              label: "Color",
+              name: "color",
+              value: form.color,
+              placeholder: "Color"
+            },
+            {
+              label: "Características",
+              name: "caracteristicas",
+              value: form.caracteristicas,
+              placeholder: "Características especiales",
+              multiline: true,
+              rows: 3
+            }
+          ].map((field) => (
+            <Box key={field.name} sx={{ mb: 2, width: "100%", maxWidth: "250px" }}>
+              <Typography
+                sx={{
+                  fontFamily: "'Audiowide', sans-serif",
+                  fontSize: 12,
+                  color: "#1e1e1e",
+                }}
+              >
+                {field.label}
+              </Typography>
+              <TextField
+                name={field.name}
+                placeholder={field.placeholder}
+                variant="outlined"
+                size="small"
+                value={field.value}
+                onChange={handleChange}
+                fullWidth
+                multiline={field.multiline}
+                rows={field.rows}
+                InputProps={{
+                  sx: {
+                    fontFamily: "Inter-Regular, Helvetica",
+                    fontSize: 12,
+                    color: "#00000066",
+                  },
+                }}
+              />
+            </Box>
+          ))}
 
-        <TextField
-          label="Marca"
-          name="marca"
-          value={form.marca}
-          onChange={handleChange}
-          required
-          fullWidth
-        />
+          {/* Select de tipo */}
+          <Box sx={{ mb: 2, width: "100%", maxWidth: "250px" }}>
+            <Typography
+              sx={{
+                fontFamily: "'Audiowide', sans-serif",
+                fontSize: 12,
+                color: "#1e1e1e",
+              }}
+            >
+              Tipo de vehículo
+            </Typography>
+            <FormControl fullWidth size="small">
+              <Select
+                name="tipo_vehiculo"
+                value={form.tipo_vehiculo}
+                onChange={handleChange}
+                sx={{
+                  fontFamily: "Inter-Regular, Helvetica",
+                  fontSize: 12,
+                  color: form.tipo_vehiculo ? "#000" : "#00000066",
+                }}
+              >
+                <MenuItem value="">
+                  <em>Selecciona tipo</em>
+                </MenuItem>
+                <MenuItem value="Auto">Auto</MenuItem>
+                <MenuItem value="Moto">Moto</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
 
-        <TextField
-          label="Modelo"
-          name="modelo"
-          value={form.modelo}
-          onChange={handleChange}
-          required
-          fullWidth
-        />
+          {error && (
+            <Typography color="error" sx={{ mt: 1, textAlign: "center" }}>
+              {error}
+            </Typography>
+          )}
 
-        <TextField
-          label="Placas"
-          name="placas"
-          value={form.placas}
-          onChange={handleChange}
-          required
-          fullWidth
-        />
-
-        <TextField
-          label="Color"
-          name="color"
-          value={form.color}
-          onChange={handleChange}
-          required
-          fullWidth
-        />
-
-        <TextField
-          label="Características"
-          name="caracteristicas"
-          value={form.caracteristicas}
-          onChange={handleChange}
-          multiline
-          rows={3}
-          fullWidth
-        />
-
-        {error && (
-          <Typography color="error" sx={{ mt: 1 }}>
-            {error}
-          </Typography>
-        )}
-
-        <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-          <Button
-            type="submit"
-            variant="contained"
-            startIcon={<Save />}
-            disabled={loading}
-            fullWidth
-          >
-            {loading ? <CircularProgress size={24} /> : "Guardar Cambios"}
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<Cancel />}
-            onClick={() => navigate("/vehiculos")}
-            fullWidth
-          >
-            Cancelar
-          </Button>
+          {/* Buttons */}
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 2, my: 3 }}>
+            <CustomButton
+              name="Cancelar"
+              onClick={() => navigate("/vehiculos")}
+              sx={{
+                fontFamily: "'Inter', sans-serif",
+                textTransform: "none",
+                "&:hover": { bgcolor: "grey" },
+              }}
+            />
+            <CustomButton
+              name={loading ? "Guardando..." : "Guardar"}
+              type="submit"
+              disabled={loading}
+              sx={{
+                fontFamily: "'Inter', sans-serif",
+                textTransform: "none",
+                backgroundColor: "#002250",
+                "&:hover": { bgcolor: "#0090a4" },
+              }}
+            />
+          </Box>
         </Box>
-      </Box>
+      </Card>
     </Box>
   );
 };

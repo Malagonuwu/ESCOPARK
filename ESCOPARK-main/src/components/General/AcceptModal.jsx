@@ -2,33 +2,27 @@ import { useState } from "react";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
 //imagenes
-import sad from "../../assets/sad.png";
-import happy from "../../assets/happy.png";
+import greet from "../../assets/greet.png";
 
-const WarningModal = ({
+const AcceptModal = ({
   title = null,
   description = null,
   showDescription = true,
   showImage = true,
-  confirmText = null,
-  cancelText = "Cancelar",
+  label = null,
   onConfirm = () => {},
-  onCancel = () => {},
 }) => {
-  const [hoveringCancel, setHoveringCancel] = useState(false);
-
   return (
     <Box
       sx={{
         display: "flex",
-        ml: 2,
-        //textAlign: "center",
+        ml: 15,
       }}
     >
       <Paper
         elevation={0}
         sx={{
-          width: "80%",
+          width: "70%",
           borderRadius: "20px",
           pl: 3,
         }}
@@ -73,49 +67,25 @@ const WarningModal = ({
                 variant="contained"
                 onClick={onConfirm}
                 sx={{
-                  bgcolor: "#d32f2f",
-                  textTransform: "none",
-                  width: 100,
-                  height: 35,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  "&:hover": {
-                    bgcolor: "#b71c1c",
-                  },
-                }}
-              >
-                {confirmText}
-              </Button>
-
-              <Button
-                variant="contained"
-                onClick={onCancel}
-                onMouseEnter={() => setHoveringCancel(true)}
-                onMouseLeave={() => setHoveringCancel(false)}
-                sx={{
                   bgcolor: "#002250",
                   textTransform: "none",
-                  fontWeight: 700,
                   width: 100,
                   height: 35,
                   fontSize: 12,
+                  fontWeight: 700,
                   "&:hover": {
-                    bgcolor: "#000f33",
+                    bgcolor: "#000",
                   },
                 }}
               >
-                {cancelText}
+                {label}
               </Button>
             </Stack>
           </Stack>
 
           {showImage && (
             <Box>
-              <Box
-                component="img"
-                src={hoveringCancel ? happy : sad}
-                sx={{ width: 119 }}
-              />
+              <Box component="img" src={greet} sx={{ width: 119 }} />
             </Box>
           )}
         </Box>
@@ -124,4 +94,4 @@ const WarningModal = ({
   );
 };
 
-export default WarningModal;
+export default AcceptModal;

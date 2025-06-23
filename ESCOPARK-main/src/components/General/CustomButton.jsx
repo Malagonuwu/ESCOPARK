@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const CustomButton = ({
   to = null,
-  onClick = null,
+  onClick = () => {},
   name,
   fullWidth = false,
   variant = "contained",
@@ -26,8 +26,8 @@ const CustomButton = ({
   const button = (
     <MuiButton
       variant={variant}
-      fullWidth={fullWidth}
       onClick={onClick}
+      fullWidth={fullWidth}
       disabled={disabled}
       sx={{ ...defaultStyles, ...sx }}
     >

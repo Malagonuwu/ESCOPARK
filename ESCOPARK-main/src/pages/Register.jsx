@@ -3,7 +3,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 // backend
 import { supabase } from "../supabaseClient";
@@ -31,8 +31,12 @@ import fondo from "../assets/Cel.jpg";
 // Componentes
 import Title from "../components/General/Title";
 import CustomButton from "../components/General/CustomButton";
+import Condiciones from "../components/Login/Condiciones";
+import AcceptModal from "../components/General/AcceptModal";
 
 const Register = () => {
+  const navigate = useNavigate();
+
   // Estados
   const [nombre, setNombre] = useState("");
   const [errorNombre, setErrorNombre] = useState(false);
@@ -40,7 +44,6 @@ const Register = () => {
   const [apellidoM, setApellidoM] = useState("");
   const [career, setCareer] = useState("");
   const [boleta, setBoleta] = useState("");
-  // const [comprobante, setComprobante] = useState(null);
   const [correo, setCorreo] = useState("");
   const [errorCorreo, setErrorCorreo] = useState(false);
 
@@ -50,16 +53,14 @@ const Register = () => {
 
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [openTerms, setOpenTerms] = useState(false);
 
-  // Nuevo. Para el tipo de usuario
-  const [tipoUsuario, setTipoUsuario] = useState("Estudiante");
-
-  // Para cambiar el tipo de usuario
-  const handleTipoUsuarioChange = (e) => {
-    setTipoUsuario(e.target.value);
-  };
+  // User type is always "Estudiante"
+  const tipoUsuario = "Estudiante";
 
   // Validación nombre
   const handleNombreChange = (e) => {
@@ -74,8 +75,6 @@ const Register = () => {
     const value = e.target.value;
     setCorreo(value);
     const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    //const correoValido = /^[\w-.]+@alumno\.ipn\.mx$|^\d{10}$/;
     setErrorCorreo(!correoValido.test(value));
   };
 
@@ -95,28 +94,21 @@ const Register = () => {
 
   // Toggle visibilidad contraseña
   const toggleShowPassword = () => setShowPassword((show) => !show);
-
-  // Manejar archivo comprobante
-  /*
-    const handleFileChange = (e) => {
-    setComprobante(e.target.files[0]);
-  };
-  */
-
+  const toggleShowConfirm = () => setShowConfirm((show) => !show);
 
   // Manejar el registro con la BD
-    const handleRegister = async () => {
+  const handleRegister = async () => {
     const { data, error } = await supabase.auth.signUp({
       email: correo,
       password: password,
       options: {
         data: {
-          tipo_usuario: tipoUsuario, // O cambia esto si es seleccionable
+          tipo_usuario: tipoUsuario,
           nombres: nombre,
           apellido_paterno: apellidoP,
           apellido_materno: apellidoM,
-          numero_boleta: tipoUsuario === "Estudiante" ? boleta : null,
-          carrera: tipoUsuario === "Estudiante" ? career : null,  
+          numero_boleta: boleta,
+          carrera: career,  
         },
       },
     });
@@ -125,11 +117,10 @@ const Register = () => {
       console.error("Error al registrar usuario:", error.message);
       alert("Error al registrar: " + error.message);
     } else {
-      alert("Registro exitoso. Revisa tu correo para confirmar la cuenta.");
-      // Opcionalmente limpia los campos del formulario
+      setShowAcceptModal(true);
     }
   };
-  
+
   return (
     <Container
       sx={{
@@ -159,7 +150,7 @@ const Register = () => {
             borderRadius: (theme) => theme.shape.borderRadius,
             display: "flex",
             flexDirection: "column",
-            overflow: "auto",
+            overflow: "hidden",
           }}
         >
           {/* FORM */}
@@ -168,69 +159,6 @@ const Register = () => {
               px: 3,
             }}
           >
-          
-          {/*Tipo de usuario*/}
-          <FormControl fullWidth sx={{ mt: 3 }}>
-            <Typography
-              sx={{
-                fontFamily: "Audiowide, sans-serif",
-                fontWeight: 400,
-                color: "white",
-                fontSize: "13px",
-                mb: "2px",
-              }}
-            >
-              Tipo de usuario
-            </Typography>
-            <Select
-              value={tipoUsuario}
-              onChange={handleTipoUsuarioChange}
-              displayEmpty
-              IconComponent={ArrowDropDownIcon}
-              size="small"
-              renderValue={(selected) =>
-                selected === "" ? "Seleccionar" : selected
-              }
-              sx={{
-                bgcolor: "white",
-                borderRadius: 1,
-                "& .MuiSelect-select": {
-                  padding: "8px 16px",
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 400,
-                  fontSize: "12px",
-                  color: "grey",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#770275",
-                  borderWidth: "2px",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "transparent",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#770275",
-                },
-              }}
-            >
-              <MenuItem value="Estudiante" sx={{ fontSize: "13px" }}>
-                Estudiante
-              </MenuItem>
-              <MenuItem value="Profesor" sx={{ fontSize: "13px" }}>
-                Profesor
-              </MenuItem>
-              <MenuItem value="Administrativo" sx={{ fontSize: "13px" }}>
-                Administrativo
-              </MenuItem>
-              <MenuItem value="Policia" sx={{ fontSize: "13px" }}>
-                Policia
-              </MenuItem>
-            </Select>
-          </FormControl>
-
-          
-
-
             {/* Nombre */}
             <FormControl fullWidth sx={{ mt: 3 }}>
               <Typography
@@ -365,7 +293,6 @@ const Register = () => {
                 Carrera en curso
               </Typography>
               <Select
-                disabled={tipoUsuario !== "Estudiante"} // Se deshabilita si no es un estudiante
                 value={career}
                 onChange={(e) => setCareer(e.target.value)}
                 displayEmpty
@@ -419,7 +346,7 @@ const Register = () => {
                 </MenuItem>
               </Select>
             </FormControl>
-            {/* Boleta y Comprobante */}
+            {/* Boleta */}
             <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
               <FormControl sx={{ flex: 1 }}>
                 <Typography
@@ -434,7 +361,6 @@ const Register = () => {
                   No. de boleta
                 </Typography>
                 <TextField
-                  disabled={tipoUsuario !== "Estudiante"} //Deshabilitar si no es estudiante
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       height: "34px",
@@ -456,12 +382,21 @@ const Register = () => {
                   onChange={(e) => setBoleta(e.target.value)}
                 />
               </FormControl>
-                  {/*Se quito la lógica de subir comprobante ya que en supabase no se puede subir un documento sin tener un usuario autenticado*/}
-            
-            
+              <FormControl sx={{ flex: 1 }}>
+                <Typography
+                  sx={{
+                    fontFamily: "Audiowide, sans-serif",
+                    fontWeight: 400,
+                    color: "white",
+                    fontSize: "13px",
+                    mb: "2px",
+                  }}
+                >
+                  {/* Empty space to maintain layout */}
+                </Typography>
+                <Box sx={{ height: "36px" }}></Box>
+              </FormControl>
             </Box>
-
-
             {/* Correo */}
             <FormControl fullWidth>
               <Typography
@@ -539,7 +474,7 @@ const Register = () => {
                       <InputAdornment position="end">
                         <IconButton
                           size="small"
-                          onClick={() => setShowPassword((prev) => !prev)}
+                          onClick={toggleShowPassword}
                         >
                           {showPassword ? (
                             <VisibilityIcon sx={{ width: 20, height: 20 }} />
@@ -597,7 +532,7 @@ const Register = () => {
                 </Typography>
                 <TextField
                   name="confirmPassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showConfirm ? "text" : "password"}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       height: "34px",
@@ -621,8 +556,8 @@ const Register = () => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton onClick={toggleShowPassword} edge="end">
-                          {showPassword ? (
+                        <IconButton onClick={toggleShowConfirm} edge="end">
+                          {showConfirm ? (
                             <VisibilityIcon sx={{ width: 20, height: 20 }} />
                           ) : (
                             <VisibilityOffIcon sx={{ width: 20, height: 20 }} />
@@ -649,30 +584,36 @@ const Register = () => {
             </Box>
 
             {/* Términos y condiciones */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={acceptTerms}
-                  onChange={(e) => setAcceptTerms(e.target.checked)}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Checkbox
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                sx={{
+                  color: "white",
+                  "&.Mui-checked": {
+                    color: "#770275",
+                  },
+                }}
+              />
+              <Typography sx={{ fontSize: 12, color: "white", opacity: 0.7 }}>
+                Acepto los{" "}
+                <Box
+                  component="span"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenTerms(true);
+                  }}
                   sx={{
                     color: "white",
-                    "&.Mui-checked": {
-                      color: "#770275",
-                    },
+                    textDecoration: "underline",
+                    cursor: "pointer",
                   }}
-                />
-              }
-              label={
-                <Typography sx={{ fontSize: 12, color: "white", opacity: 0.7 }}>
-                  Acepto los{" "}
-                  <Link href="#" underline="always" sx={{ color: "white" }}>
-                    términos y condiciones
-                  </Link>
-                  .
-                </Typography>
-              }
-              sx={{ mb: 1 }}
-            />
+                >
+                  términos y condiciones
+                </Box>
+                .
+              </Typography>
+            </Box>
           </Box>
 
           {/* Botón y enlace final */}
@@ -686,10 +627,11 @@ const Register = () => {
                 !nombre ||
                 !apellidoP ||
                 !apellidoM ||
+                !career ||
+                !boleta ||
                 !correo ||
                 !password ||
                 !confirmPassword ||
-                (tipoUsuario === "Estudiante" && (!career || !boleta)) ||
                 errorNombre ||
                 errorCorreo ||
                 errorPassword ||
@@ -732,6 +674,35 @@ const Register = () => {
           }}
         />
       </Box>
+
+      <Condiciones open={openTerms} onClose={() => setOpenTerms(false)} />
+
+      {showAcceptModal && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            bgcolor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 10,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <AcceptModal
+            title="¡Registro exitoso!"
+            description="Bienvenido, tu cuenta ha sido registrada correctamente."
+            label="Aceptar"
+            onConfirm={() => {
+              setShowAcceptModal(false);
+              navigate("/login");
+            }}
+          />
+        </Box>
+      )}
     </Container>
   );
 };

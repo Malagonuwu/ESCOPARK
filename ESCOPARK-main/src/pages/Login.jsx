@@ -150,7 +150,6 @@ const handleLogin = async () => {
               left: "61px",
             }}
           >
-            // Boton que une la el front con el back
             <CustomButton name="Ingresar" fullWidth onClick={handleLogin} /> 
 
           </Box>

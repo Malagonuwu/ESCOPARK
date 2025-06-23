@@ -38,15 +38,19 @@ const parkingSpaces = [
 
 const Estacionamientos = () => {
   return (
-    <Container
+    <Box
       sx={{
-        width: "412px",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "white",
-      }}
-    >
+        display:"flex", 
+        flexDirection:"column", 
+        minHeight:"100vh", 
+        width:"100%",
+        margin: 0,
+        padding: 0,
+        backgroundColor: "White",
+        overflowX: "hidden",
+        position:"relative"
+      }}>
+
       {/* Header */}
       <Header
         sectionTitle="Estacionamientos"
@@ -54,60 +58,122 @@ const Estacionamientos = () => {
         showAvatar={false}
         backgroundColor="rgba(119, 2, 117, 0.77)"
       />
+      <Container
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent:"center",
+          alignItems:"center",
+          backgroundColor: "white",
+          marginBottom:"2rem"
+        }}>
+      
 
-      {/* Main Content */}
-      <Box sx={{ px: 2, mt: 2 }}>
-        {/* Parking Spaces List */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {parkingSpaces.map((space) => (
-            <Card
-              key={space.id}
-              sx={{
-                borderRadius: "4px",
-                boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
-                border: "0.1px solid rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <CardContent sx={{ p: 2 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
+        {/* Main Content */}
+        <Box sx={{ px: 2, mt: 2 , height:"100%"}}>
+          {/* Parking Spaces List */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {parkingSpaces.map((space) => (
+              <Card
+                key={space.id}
+                sx={{
+                  borderRadius: "1rem",
+                  boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
+                  border: "0.1px solid rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <CardContent sx={{ p: 2 }}>
+                  <Box
                     sx={{
-                      fontFamily: "Inter, Sans-Serif",
-                      fontWeight: "bold",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    {space.name}
-                  </Typography>
-
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography
                       sx={{
-                        fontFamily: "Orbitron, Sans-Serif",
-                        fontSize: "11px",
-                        mr: 2,
+                        fontFamily: "Inter, Sans-Serif",
+                        fontWeight: "bold",
                       }}
                     >
-                      Disponible: {space.available}
+                      {space.name}
                     </Typography>
+
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Typography
+                        sx={{
+                          fontFamily: "Orbitron, Sans-Serif",
+                          fontSize: "11px",
+                          mr: 2,
+                        }}
+                      >
+                        Disponible: {space.available}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+
+          {/* Botón nuevo estacionamiento */}
+          <Box sx={{
+            display:"flex",
+            flexDirection:"column",
+            justifyContent:"center",
+            alignItems:"center",
+            margin:"2rem"
+          }}>
+            <Button variant="contained"
+              sx={{
+                fontFamily: "Orbitron, Sans-Serif",
+                width: "11rem",
+                height: "2.8rem",
+                padding:"1.6rem",
+                bgcolor:  "#770275",
+                borderRadius: "0.6rem",
+                boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
+                border: "0.1px solid rgba(0, 0, 0, 0.1)",
+                fontWeight: "bold",
+                "&:hover": {
+                  bgcolor: "#007a8a",
+                },
+              }}>
+              Crear nuevo estacionamiento
+            </Button>
+          </Box>
+
+          <Box>
+            <Typography sx={{
+                          fontFamily: "Orbitron, Sans-Serif",
+                          fontSize: "1rem",
+                          mr: 1,
+                        }}>
+              Estadísticas de estacionamientos
+            </Typography>
+            <Box sx={{
+                marginTop:"1rem",
+                fontFamily: "Orbitron, Sans-Serif",
+                fontSize:"0.8rem",
+                backgroundColor:"#ddd",
+                padding:"1rem",
+                borderRadius:"0.6rem",
+                boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)"
+              }}>
+                Entradas semanales:
+                <br /><br />
+                Número de vehículos:
+            </Box>            
+          </Box>
         </Box>
 
-        {/* Botón nuevo estacionamiento */}
-      </Box>
-
+      </Container>
+      
       {/*Navbar*/}
-      <NavegationBar />
-    </Container>
+      <NavegationBar/>
+    </Box>
+    
   );
 };
 

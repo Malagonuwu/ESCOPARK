@@ -113,7 +113,7 @@ const Header = ({
   return showBackgroundImage ? (
     <Box
       sx={{
-        height: "25vh",
+        height: "18vh",
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",

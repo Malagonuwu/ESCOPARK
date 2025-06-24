@@ -33,6 +33,8 @@ const NavegationBar = () => {
         bottom: 0,
         left: 0,
         bgcolor: "#002250",
+        position: "fixed",
+        zIndex: 10
       }}
     >
       <BottomNavigation

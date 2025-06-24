@@ -93,14 +93,14 @@ const AddVehicle = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column",  justifyContent:"space-between",  height:"100vh"}}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column",  justifyContent:"space-between",  height:"90vh"}}>
       <Header
               sectionTitle="Vehículos"
               userName={`${perfil.nombres || "Usuario"} ${perfil.apellido_paterno || ""}`}
               showBackgroundImage={false}
               backgroundColor="#002250"
       />
-      <Box sx={{display:"flex", flexDirection:"column", rowGap:"1.5rem", p:"1rem"}}>
+      <Box sx={{display:"flex", flexDirection:"column", rowGap:"1.5rem", p:"1rem", marginBottom:"3rem"}}>
           <FormControl required>
           <InputLabel id="tipo-vehiculo-label">Tipo de Vehículo</InputLabel>
           <Select
@@ -137,7 +137,7 @@ const AddVehicle = () => {
               <Avatar
                 variant="rounded"
                 src={URL.createObjectURL(form.Foto_Vehiculo)}
-                sx={{ width: 100, height: 80 }}
+                sx={{ width: 100, height: 50, objectFit:"contain" }}
               />
               <Typography variant="caption">{form.Foto_Vehiculo.name}</Typography>
             </Box>
@@ -145,13 +145,13 @@ const AddVehicle = () => {
         </Box>
 
         {/* Botones */}
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box sx={{ display: "flex", gap: 1}}>
           <Button type="submit" variant="contained">Guardar</Button>
           <Button variant="outlined" onClick={() => navigate("/vehiculos")}>Cancelar</Button>
         </Box>
       </Box>
 
-      <NavegationBar/>
+      <NavegationBar sx={{marginTop:"1rem"}}/>
     </Box>
   );
 };

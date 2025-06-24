@@ -80,10 +80,11 @@ const Vehiculos = () => {
     <Container
       disableGutters
       sx={{
-        width: "412px",
+        width: "100%",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
+        justifyContent:"space-between",
         backgroundColor: "white",
         overflow: "hidden",
       }}
@@ -191,7 +192,7 @@ const Vehiculos = () => {
         )}
       </Box>
 
-      <Box sx={{ py: 2, display: "flex", justifyContent: "center" }}>
+      <Box sx={{ py:20, display: "flex", justifyContent: "center" }}>
         <CustomButton
           to="/vehiculos/agregar"
           name="Agregar vehículo"

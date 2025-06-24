@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button, Container, Typography} from "@mui/material";
 
 // Componentes
 import Header from "../../components/General/Header";
 import NavegationBarPolicia from "../../components/Policia/NavegationBarPolicia";
 import RegistrarEntradaModal from "../../components/Policia/RegistrarEntradaModal";
+
+import escomLogo from "../../assets/escom_logo.png";
+import escomFoto from "../../assets/escomFoto.jpeg";
 
 // Supabase
 import { supabase } from "../../supabaseClient";
@@ -76,8 +79,64 @@ const HomePolicia = () => {
         showBackgroundImage={false}
         backgroundColor="#002250"
       />
-
-      <Box sx={{ p: 3, flexGrow: 1 }}>
+      
+      <Box sx={{display:"flex", flexDirection:"column", mt:"3rem", rowGap:"1rem"}}>
+        <Box>
+          <Typography
+            sx={{
+              fontFamily: "Orbitron, Sans-Serif",
+              fontWeight: "bold",
+              textAlign:"center",
+              fontSize: "22px",
+              mt:"1rem"
+            }}>
+            ¡Bienvenido Policia!
+          </Typography>
+          <Box 
+                      sx={{ 
+                        display: "flex", 
+                        justifyContent: "center",
+                        mt: "1rem"
+                      }}
+                    >
+                      <img 
+                        src= {escomLogo} // Reemplaza con la ruta correcta
+                        alt="Logo Politécnico" 
+                        style={{ 
+                          width: "15rem", 
+                          objectFit:"contain"
+                        }}
+                      />
+                    </Box>
+                    <Typography
+                                variant="h6"
+                                sx={{
+                                  fontFamily: "Orbitron, Sans-Serif",
+                                  fontSize: "14px",
+                                  textAlign:"center",
+                                  mt:"1rem"
+                                }}>
+                      Através de este sistema podrás gestionar las entradas y salidas de los vehículos de los ususarios.
+                    </Typography>
+                    <Box 
+                                          sx={{ 
+                                            display: "flex", 
+                                            justifyContent: "center",
+                                            mt: "0rem"
+                                          }}
+                    >
+                                          <img 
+                                            src= {escomFoto} // Reemplaza con la ruta correcta
+                                            alt="Foto Politécnico" 
+                                            style={{ 
+                                              marginTop:"1rem",
+                                              width: "100%", 
+                                              height: "auto",
+                                              objectFit:"contain"
+                                            }}
+                                          />
+                                        </Box>
+        </Box>
         <Button
           variant="contained"
           fullWidth

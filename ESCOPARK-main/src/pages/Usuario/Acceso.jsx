@@ -222,7 +222,7 @@ const Acceso = () => {
         )}
       </Box>
 
-      <Box sx={{ py: 2, display: "flex", justifyContent: "center" }}>
+      <Box sx={{ py: 20, display: "flex", justifyContent: "center"}}>
         {!registroActivo ? (
           <CustomButton
             name="Generar Código"

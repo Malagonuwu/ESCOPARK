@@ -245,7 +245,7 @@ const Home = () => {
               }}
             />
           </Box>
-        <Box sx={{ px: 2, py: 3, mb:"1rem" }}>
+        <Box sx={{ px: 2, py: 2, mb:"4rem" }}>
           
           <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: '1rem' }}>
             <Box sx={{

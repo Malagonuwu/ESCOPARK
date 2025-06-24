@@ -140,7 +140,7 @@ const Profile = () => {
           name="Eliminar cuenta"
           onClick={() => setShowModal(true)}
           sx={{
-            top: -20,
+            top: -90,
             bgcolor: "#d32f2f",
             "&:hover": {
               bgcolor: "#b71c1c",

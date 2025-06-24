@@ -13,13 +13,63 @@ import {
 import React, { useState } from "react";
 
 const CrearEditar = () => {
+  const [nombre, setNombre] = useState("");
+  const [ubicacion, setUbicacion] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [tipo,setTipo] = useState("");
   // State for form values
+
   const [capacity, setCapacity] = useState([0, 100]);
 
   // Handle slider change
   const handleCapacityChange = (event, newValue) => {
     setCapacity(newValue);
   };
+  const handleCrearEstacionamiento = async (e) => {
+    e.preventDefault(); // Previene recarga del formulario
+
+
+    const nuevoEstacionamiento = {
+        Nombre:nombre,
+        Tipo:tipo,
+        Capacidad:capacity[1],
+        Ubicacion:ubicacion,
+        Descripcion:descripcion,      
+      };
+
+    try {
+      const response = await fetch("http://localhost:4000/api/crear-estacionamiento", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nuevoEstacionamiento),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al crear el estacionamiento.");
+      }
+
+      const result = await response.json();
+      alert("Estacionamiento creado con éxito");
+      console.log("Respuesta del servidor:", result);
+
+      // Limpiar formulario
+      setNombre("");
+      setUbicacion("");
+      setDescripcion("");
+      setCapacity([0, 100]);
+      setTipo("");
+
+    } catch (err) {
+      console.error("Error en la creación:", err);
+      setError(err.message); // Opcional: si tienes UI para mostrar errores
+    } finally {
+      setLoading(false); // Opcional
+    }
+  };
+
 
   return (
     <Container
@@ -132,9 +182,11 @@ const CrearEditar = () => {
           </Typography>
           <TextField
             fullWidth
-            placeholder="Ingresa el nombre del policia"
+            placeholder="Ingresa el nombre del estacionamiento"
             variant="outlined"
             size="medium"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
           />
         </Box>
 
@@ -152,9 +204,11 @@ const CrearEditar = () => {
           </Typography>
           <TextField
             fullWidth
-            placeholder="Ingresa el nombre del policia"
+            placeholder="Ingresa la ubicacion del estacionamiento"
             variant="outlined"
             size="medium"
+            value={ubicacion}
+            onChange={(e) => setUbicacion(e.target.value)}
           />
         </Box>
 
@@ -201,6 +255,27 @@ const CrearEditar = () => {
             }}
           />
         </Box>
+        {/* Tipo */}
+        <Box>
+          <Typography
+            sx={{
+              fontFamily: "Orbitron-Bold, Helvetica",
+              fontWeight: "bold",
+              fontSize: "1rem",
+              mb: 1,
+            }}
+          >
+            Tipo de estacionamiento
+          </Typography>
+          <TextField
+            fullWidth
+            placeholder="Ingresa el tipo de estacionamiento (Motocicletas/Vehiculos)"
+            variant="outlined"
+            size="medium"
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
+          />
+        </Box>
 
         {/* Description and Rules */}
         <Box>
@@ -220,6 +295,8 @@ const CrearEditar = () => {
             variant="outlined"
             multiline
             minRows={4}
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
           />
         </Box>
 
@@ -241,6 +318,7 @@ const CrearEditar = () => {
                 bgcolor: "#5c0159",
               },
             }}
+            onClick={handleCrearEstacionamiento}
           >
             Crear
           </Button>

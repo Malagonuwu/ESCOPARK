@@ -14,7 +14,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React ,{ useEffect, useState } from "react";
+import { useParams,useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
 
 // In a real implementation, these would be imported from your assets
 // Using placeholder URLs for demonstration
@@ -23,23 +25,177 @@ const avatarImage = "image-3.png";
 const carImage = "MIAUTOGDL-79-876x535-2.png";
 
 const EdicionDeUsuarios = () => {
-  // User data
-  const userData = {
-    name: "Luis David Martínez Martínez",
-    boleta: "2022630175",
-    phone: "9711275226",
-    email: "9711275226",
-  };
+  const { id } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [vehicleData, setVehicleData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [nombre, setNombre] = useState("");
+  const [boleta, setBoleta] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [correo, setCorreo] = useState("");
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true); // Inicia el estado de carga
+      setError(null); // Limpia errores anteriores
 
-  // Vehicle data
-  const vehicleData = [
-    {
-      id: "TKM2ICKKCK",
-      model: "Chevrolet Aveo 2015",
-      color: "PLATEADO",
-      image: carImage,
-    },
-  ];
+      try {
+        // --- Petición para obtener los datos de un solo usuario ---
+        const userResponse = await fetch(`http://localhost:4000/api/get-user/${id}`);
+        if (!userResponse.ok) {
+          // Si la respuesta no es OK (ej. 404, 500), lanza un error
+          const errorData = await userResponse.json();
+          throw new Error(errorData.error || "Error al obtener usuario");
+        }
+        const userDataFromBackend = await userResponse.json();
+        setUserData(userDataFromBackend);
+        console.log("Datos del usuario:", userDataFromBackend);
+
+        // Actualiza los estados de los campos del formulario con los datos del usuario
+        setNombre(userDataFromBackend.nombres || "");
+        setBoleta(userDataFromBackend.id_usuario || "");
+        setTelefono(userDataFromBackend.telefono || "");
+        setCorreo(userDataFromBackend.correo_institucional || "");
+
+        // --- Petición para obtener los vehículos del usuario ---
+        const vehiclesResponse = await fetch(`http://localhost:4000/api/get-user-vehicles/${id}`);
+        if (!vehiclesResponse.ok) {
+          const errorData = await vehiclesResponse.json();
+          throw new Error(errorData.error || "Error al obtener vehículos");
+        }
+        const vehicleDataFromBackend = await vehiclesResponse.json();
+        setVehicleData(vehicleDataFromBackend);
+        console.log("Vehículos del usuario:", vehicleDataFromBackend);
+
+      } catch (err) {
+        console.error("Error en la petición:", err.message);
+        setError(err.message); // Guarda el mensaje de error en el estado
+      } finally {
+        setLoading(false); // Finaliza el estado de carga
+      }
+    };
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
+  // Función para manejar la actualización del usuario
+  const handleUpdateUser = async (e) => {
+    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+
+    setLoading(true);
+    setError(null);
+    
+
+    const updatedData = {
+      nombres:nombre,
+      correo_institucional: correo,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:4000/api/update-user/${id}`, {
+        method: "PUT", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData), 
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al actualizar el usuario.");
+      }
+
+      const result = await response.json();
+      alert("Usuario actualizado con éxito!");
+      console.log("Usuario actualizado:", result);
+
+
+    } catch (err) {
+      console.error("Error en la actualización:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  //Handle para la eliminacion de un usuario
+  const handleDeleteUser = async () => {
+    // Muestra un cuadro de diálogo de confirmación del navegador
+    const confirmDelete = window.confirm("¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.");
+
+    if (confirmDelete) {
+      setLoading(true); // Activa el estado de carga
+      setError(null);
+      setSuccessMessage(null);
+
+      try {
+        const response = await fetch(`http://localhost:4000/api/delete-user/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Error al eliminar usuario.");
+        }
+
+        const result = await response.json();
+        window.alert(result.message || "Usuario eliminado con éxito."); // Muestra un alert de éxito
+        console.log("Usuario eliminado:", result);
+        navigate("/gestion-usuarios"); // Redirige a la pantalla de gestión de usuarios
+
+      } catch (err) {
+        console.error("Error al eliminar usuario:", err.message);
+        window.alert("Error al eliminar el usuario: " + err.message); // Muestra un alert de error
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // El usuario canceló la eliminación
+      console.log("Eliminación de usuario cancelada.");
+    }
+  };
+  const handleDeleteVehicle = async (placasAEliminar) => {
+    const confirmDeleteVehicle = window.confirm(`¿Estás seguro de que quieres eliminar el vehículo con placas ${placasAEliminar}? Esta acción es irreversible.`);
+
+    if (confirmDeleteVehicle) {
+      setLoading(true); // Activa el estado de carga para la operación
+      setError(null);
+      
+
+      try {
+        const response = await fetch(`http://localhost:4000/api/delete-vehicle`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_usuario: id, // ID del usuario actual de useParams
+            placas: placasAEliminar, // Placas del vehículo a eliminar
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Error al eliminar el vehículo.");
+        }
+
+        const result = await response.json();
+        window.alert(result.message || "Vehículo eliminado con éxito.");
+        console.log("Vehículo eliminado:", result);
+
+
+      } catch (err) {
+        console.error("Error al eliminar vehículo:", err.message);
+        window.alert("Error al eliminar el vehículo: " + err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.log("Eliminación de vehículo cancelada.");
+    }
+  };
 
   return (
     <Box
@@ -137,7 +293,7 @@ const EdicionDeUsuarios = () => {
               mb: 2,
             }}
           >
-            Editar usuario: Luis David Martínez
+            Editar usuario
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -158,12 +314,14 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.name}
+                value={nombre} 
+                onChange={(e) => setNombre(e.target.value)}
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
               />
             </Box>
+            
 
             <Box>
               <Typography
@@ -179,7 +337,8 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.boleta}
+                value={boleta} 
+                onChange={(e) => setBoleta(e.target.value)}
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
@@ -200,7 +359,8 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.phone}
+                value={telefono} 
+                onChange={(e) => setTelefono(e.target.value)}
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
@@ -221,7 +381,8 @@ const EdicionDeUsuarios = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                value={userData.email}
+                value={correo} 
+                onChange={(e) => setCorreo(e.target.value)}
                 InputProps={{
                   sx: { borderRadius: "8px" },
                 }}
@@ -240,7 +401,7 @@ const EdicionDeUsuarios = () => {
                 mb: 2,
               }}
             >
-              Vehículos de: Luis David Martínez
+              Vehículos:
             </Typography>
 
             <Divider sx={{ mb: 3 }} />
@@ -268,7 +429,7 @@ const EdicionDeUsuarios = () => {
                 >
                   <Box
                     component="img"
-                    src={vehicle.image}
+                    src={vehicle.foto_vehiculo}
                     alt="Car"
                     sx={{
                       width: "42px",
@@ -285,7 +446,7 @@ const EdicionDeUsuarios = () => {
                         lineHeight: 1,
                       }}
                     >
-                      {vehicle.model}
+                      {vehicle.modelo}
                     </Typography>
                     <Typography
                       sx={{
@@ -294,7 +455,7 @@ const EdicionDeUsuarios = () => {
                         lineHeight: 1.2,
                       }}
                     >
-                      {vehicle.id}
+                      {vehicle.placas}
                     </Typography>
                     <Typography
                       sx={{
@@ -319,6 +480,7 @@ const EdicionDeUsuarios = () => {
                       bgcolor: "#5c0159",
                     },
                   }}
+                  onClick={() => handleDeleteVehicle(vehicle.placas)} 
                 >
                   <DeleteIcon sx={{ color: "white", fontSize: 32 }} />
                 </IconButton>
@@ -351,6 +513,7 @@ const EdicionDeUsuarios = () => {
                   bgcolor: "#007a8a",
                 },
               }}
+              onClick={handleUpdateUser}
             >
               Guardar
             </Button>
@@ -370,6 +533,7 @@ const EdicionDeUsuarios = () => {
                   bgcolor: "#5c0159",
                 },
               }}
+              onClick={handleDeleteUser}
             >
               Eliminar
             </Button>

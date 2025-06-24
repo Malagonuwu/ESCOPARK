@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
 import {
   Autocomplete,
   Box,
@@ -15,27 +16,32 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
-
-const userData = [
-  {
-    id: "2022630175",
-    name: "David Martínez",
-    vehicles: 1,
-  },
-  {
-    id: "2022630175",
-    name: "David Martínez",
-    vehicles: 1,
-  },
-  {
-    id: "2022630175",
-    name: "David Martínez",
-    vehicles: 1,
-  },
-];
+import React,{useState,useEffect} from "react";
 
 const PantallaGestionDe = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/get-users");
+        if (!response.ok) {
+          throw new Error("Error al obtener usuarios");
+        }
+        const data = await response.json();
+        setUsers(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -195,7 +201,7 @@ const PantallaGestionDe = () => {
         </Paper>
 
         {/* User Cards */}
-        {userData.map((user, index) => (
+        {users.map((user, index) => (
           <Stack
             key={index}
             direction="row"
@@ -230,7 +236,7 @@ const PantallaGestionDe = () => {
                     fontSize: "13px",
                   }}
                 >
-                  {user.name}
+                  {user.nombres} {user.apellido_paterno} {user.apellido_materno}
                 </Typography>
                 <Typography
                   sx={{
@@ -239,7 +245,7 @@ const PantallaGestionDe = () => {
                     fontSize: "8px",
                   }}
                 >
-                  {user.id}
+                  {user.id_usuario}
                 </Typography>
                 <Typography
                   sx={{
@@ -264,8 +270,10 @@ const PantallaGestionDe = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onClick={() => navigate(`/EditUsuario/${user.id_usuario}`)}
             >
               <EditIcon sx={{ color: "white", width: 36, height: 33 }} />
+
             </Card>
           </Stack>
         ))}

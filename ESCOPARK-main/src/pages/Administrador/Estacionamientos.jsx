@@ -17,7 +17,7 @@ import fondo from "../../assets/back.png";
 
 //Components
 import Header from "../../components/General/Header";
-
+import React, { useState,useEffect } from "react";
 // Mock data for parking spaces
 const parkingSpaces = [
   {
@@ -33,6 +33,28 @@ const parkingSpaces = [
 ];
 
 const Estacionamientos = () => {
+  const [estacionamientos, setEstaciona] = useState([]);
+  
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/get-estacionamiento");
+        if (!response.ok) {
+          throw new Error("Error al obtener usuarios");
+        }
+        const data = await response.json();
+        setEstaciona(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
   return (
     <Container
       disableGutters
@@ -71,9 +93,9 @@ const Estacionamientos = () => {
 
         {/* Parking Spaces List */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          {parkingSpaces.map((space) => (
+          {estacionamientos.map((space) => (
             <Card
-              key={space.id}
+              key={space.idEstacionamiento}
               sx={{
                 borderRadius: "13px",
                 boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -94,7 +116,7 @@ const Estacionamientos = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {space.name}
+                    {space.Nombre}
                   </Typography>
 
                   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -105,7 +127,7 @@ const Estacionamientos = () => {
                         mr: 2,
                       }}
                     >
-                      Disponible: {space.available}
+                      Disponible: {space.Capacidad}
                     </Typography>
 
                     <IconButton size="small">

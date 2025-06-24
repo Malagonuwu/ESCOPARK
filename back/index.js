@@ -331,3 +331,48 @@ app.get("/api/get-estacionamiento", async (req, res) => {
     res.status(500).json({ error: "Error inesperado" });
   }
 });
+
+//GET un estacionamiento por ID
+app.get("/api/get-estacionamientoIndividual/:id", async (req, res) => {
+  const { id } = req.params;
+  const { data, error } = await supabaseAdmin
+    .from("Estacionamiento")
+    .select("*")
+    .eq("idEstacionamiento", id)
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+//PUT para actualizar un estacionamiento
+app.put("/api/update-estacionamiento/:id", async (req, res) => {
+  const { id } = req.params;
+  const { Nombre,Tipo,Capacidad ,Descripcion, Ubicacion  } = req.body;
+
+  if (![Nombre,Tipo,Capacidad ,Descripcion, Ubicacion ].every((f) => f != null)) {
+    return res.status(400).json({ error: "Todos los campos son requeridos." , message:req.body});
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from("Estacionamiento")
+    .update({ Nombre,Tipo,Capacidad ,Descripcion, Ubicacion  })
+    .eq("idEstacionamiento", id)
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ message: "Estacionamiento actualizado con éxito.", data });
+});
+
+//DELETE para eliminar un estacionamiento
+app.delete("/api/delete-estacionamiento/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const { error } = await supabaseAdmin
+    .from("Estacionamiento")
+    .delete()
+    .eq("idEstacionamiento", id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ message: "Estacionamiento eliminado correctamente." });
+});

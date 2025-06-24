@@ -15,6 +15,9 @@ import { supabase } from "../../supabaseClient";
 
 import Header from "../../components/General/Header";
 import AdminNav from "../../components/General/AdminNav";
+//Importacion de modals
+import ModalPregunta from "./ModalPregunta.jsx";
+import ModalAccRealizada from "./ModalAccRealizada.jsx";
 const formFields = [
   {
     id: "name",
@@ -61,6 +64,16 @@ const formFields = [
 ];
 
 const RegistroDePolicias = () => {
+  //Modals
+  // Para modal de confirmación
+  const [openPregunta, setOpenPregunta] = useState(false);
+  const [mensajePregunta, setMensajePregunta] = useState("");
+  const [accionConfirmada, setAccionConfirmada] = useState(() => () => {});
+
+  // Para modal de notificación
+  const [openNotificacion, setOpenNotificacion] = useState(false);
+  const [mensajeNotificacion, setMensajeNotificacion] = useState("");
+  const [tipoNotificacion, setTipoNotificacion] = useState("success"); // o "error"
   const [formData, setFormData] = useState({
     tipo_usuario : "Policia",
     name: "",
@@ -70,6 +83,18 @@ const RegistroDePolicias = () => {
     idNumber: "",
     password:""
   });
+  const limpiarFormulario = () => {
+  setFormData({
+    tipo_usuario: "Policia",
+    name: "",
+    paternalLastName: "",
+    maternalLastName: "",
+    correo: "",
+    idNumber: "",
+    password: ""
+  });
+};
+
 
   
   const handleChange = (e) => {
@@ -81,43 +106,32 @@ const RegistroDePolicias = () => {
   };
   // Función para manejar el registro del policía
   const handleRegisterPolice = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/api/register-policia", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.correo,
+      password: formData.password,
+      options: {
+        data: {
+          tipo_usuario: formData.tipo_usuario, 
+          nombres: formData.name,
+          apellido_paterno: formData.paternalLastName,
+          apellido_materno: formData.maternalLastName,
+          numero_boleta: formData.tipoUsuario === "Estudiante" ? boleta : null,
+          carrera: formData.tipoUsuario === "Estudiante" ? career : null,  
         },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error desconocido al registrar el policía.");
-      }
-
-      const result = await response.json();
-      alert("Policía registrado exitosamente.");
-      console.log("Registro exitoso:", result);
-
-      // Limpiar el formulario después de un registro exitoso
-      setFormData({
-        tipo_usuario : "Policia",
-        name: "",
-        paternalLastName: "",
-        maternalLastName: "",
-        correo: "",
-        idNumber: "",
-        password:""
-      });
-      setTimeout(() => {
-        
-      }, 2000); // 2 segundos para ver el mensaje de éxito
-
-    } catch (err) {
-      console.error("Error en el registro del policía:", err);
-   
-    } finally {
-      
+      },
+    });
+  
+    if (error) {
+      console.error("Error al registrar usuario:", error.message);
+       setMensajeNotificacion(err.message);
+        setTipoNotificacion("error");
+        setOpenNotificacion(true);
+    } else {
+      setMensajeNotificacion("Guardia creado con exito.");
+      setTipoNotificacion("success");
+      setOpenNotificacion(true);
+      // Limpia los campos del formulario
+      limpiarFormulario();
     }
   };
   return (
@@ -213,6 +227,22 @@ const RegistroDePolicias = () => {
         </Container>
         </Box>
         <AdminNav/>
+        <ModalPregunta
+          open={openPregunta}
+          onClose={() => setOpenPregunta(false)}
+          mensaje={mensajePregunta}
+          onConfirm={() => {
+            setOpenPregunta(false);
+            accionConfirmada();
+          }}
+        />
+
+        <ModalAccRealizada
+          open={openNotificacion}
+          onClose={() => setOpenNotificacion(false)}
+          mensaje={mensajeNotificacion}
+          tipo={tipoNotificacion}
+        />
     </Box>
     
   );

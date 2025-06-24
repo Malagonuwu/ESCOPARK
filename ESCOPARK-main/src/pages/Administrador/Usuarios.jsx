@@ -17,9 +17,9 @@ import {
   Typography,
 } from "@mui/material";
 import React,{useState,useEffect} from "react";
-
 import Header from "../../components/General/Header.jsx";
 import NavegationBar from "../../components/General/AdminNav.jsx";
+
 
 const PantallaGestionDe = () => {
   const [users, setUsers] = useState([]);

@@ -1,5 +1,8 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
@@ -34,8 +37,25 @@ const parkingSpaces = [
 ];
 
 const Estacionamientos = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [estacionamientos, setEstaciona] = useState([]);
-  
+  const handleMenuClick = (event, idEstacionamiento) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedId(idEstacionamiento);
+    handleEdit(idEstacionamiento);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedId(null);
+  };
+
+  const handleEdit = (idEstacionamiento) => {
+    navigate(`/EditEstacionamiento/${idEstacionamiento}`);
+    handleClose();
+  };
+    
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -56,6 +76,7 @@ const Estacionamientos = () => {
 
     fetchUsers();
   }, []);
+  const navigate = useNavigate();
   return (
     <Container
       disableGutters
@@ -131,7 +152,7 @@ const Estacionamientos = () => {
                       Disponible: {space.Capacidad}
                     </Typography>
 
-                    <IconButton size="small">
+                    <IconButton size="small" onClick={(e) => handleMenuClick(e, space.idEstacionamiento)}>
                       <MoreVertIcon />
                     </IconButton>
                   </Box>
@@ -164,6 +185,7 @@ const Estacionamientos = () => {
                 bgcolor: "#5c0159",
               },
             }}
+            onClick={() => navigate(`/AddEstacionamiento`)}
           >
             <Typography
               sx={{
@@ -175,6 +197,7 @@ const Estacionamientos = () => {
             >
               Crear nuevo estacionamiento
             </Typography>
+            
           </Button>
         </Box>
       </Box>

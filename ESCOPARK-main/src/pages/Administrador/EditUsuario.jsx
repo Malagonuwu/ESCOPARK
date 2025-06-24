@@ -27,6 +27,10 @@ const headerImage = "header.svg";
 const avatarImage = "image-3.png";
 const carImage = "MIAUTOGDL-79-876x535-2.png";
 
+//Importacion de modals
+import ModalPregunta from "./ModalPregunta.jsx";
+import ModalAccRealizada from "./ModalAccRealizada.jsx";
+
 const EdicionDeUsuarios = () => {
   const { id } = useParams();
   const [userData, setUserData] = useState(null);
@@ -38,6 +42,16 @@ const EdicionDeUsuarios = () => {
   const [boleta, setBoleta] = useState("");
   const [telefono, setTelefono] = useState("");
   const [correo, setCorreo] = useState("");
+  //Modals
+  // Para modal de confirmación
+  const [openPregunta, setOpenPregunta] = useState(false);
+  const [mensajePregunta, setMensajePregunta] = useState("");
+  const [accionConfirmada, setAccionConfirmada] = useState(() => () => {});
+
+  // Para modal de notificación
+  const [openNotificacion, setOpenNotificacion] = useState(false);
+  const [mensajeNotificacion, setMensajeNotificacion] = useState("");
+  const [tipoNotificacion, setTipoNotificacion] = useState("success"); // o "error"
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true); // Inicia el estado de carga
@@ -57,7 +71,7 @@ const EdicionDeUsuarios = () => {
 
         // Actualiza los estados de los campos del formulario con los datos del usuario
         setNombre(userDataFromBackend.nombres || "");
-        setBoleta(userDataFromBackend.id_usuario || "");
+        setBoleta(userDataFromBackend.numero_boleta || "");
         setTelefono(userDataFromBackend.telefono || "");
         setCorreo(userDataFromBackend.correo_institucional || "");
 
@@ -84,53 +98,50 @@ const EdicionDeUsuarios = () => {
   }, [id]);
   // Función para manejar la actualización del usuario
   const handleUpdateUser = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+      e.preventDefault(); // Previene el comportamiento por defecto del formulario
 
-    setLoading(true);
-    setError(null);
-    
-
-    const updatedData = {
-      nombres:nombre,
-      correo_institucional: correo,
-    };
-
-    try {
-      const response = await fetch(`http://localhost:4000/api/update-user/${id}`, {
-        method: "PUT", 
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData), 
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar el usuario.");
-      }
-
-      const result = await response.json();
-      alert("Usuario actualizado con éxito!");
-      console.log("Usuario actualizado:", result);
-
-
-    } catch (err) {
-      console.error("Error en la actualización:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-  //Handle para la eliminacion de un usuario
-  const handleDeleteUser = async () => {
-    // Muestra un cuadro de diálogo de confirmación del navegador
-    const confirmDelete = window.confirm("¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.");
-
-    if (confirmDelete) {
-      setLoading(true); // Activa el estado de carga
+      setLoading(true);
       setError(null);
-      setSuccessMessage(null);
+      
 
+      const updatedData = {
+        nombres:nombre,
+        correo_institucional: correo,
+      };
+
+      try {
+        const response = await fetch(`http://localhost:4000/api/update-user/${id}`, {
+          method: "PUT", 
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData), 
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Error al actualizar el usuario.");
+        }
+
+        const result = await response.json();
+        setMensajeNotificacion("Usuario actualizado con éxito.");
+        setTipoNotificacion("success");
+        setOpenNotificacion(true);
+
+        console.log("Usuario actualizado:", result);
+
+
+      } catch (err) {
+        console.error("Error en la actualización:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    //Handle para la eliminacion de un usuario
+    const handleDeleteUser = () => {
+    setMensajePregunta("¿Estás seguro de que deseas eliminar a este usuario?");
+    setAccionConfirmada(() => async () => {
       try {
         const response = await fetch(`http://localhost:4000/api/delete-user/${id}`, {
           method: "DELETE",
@@ -142,40 +153,31 @@ const EdicionDeUsuarios = () => {
         }
 
         const result = await response.json();
-        window.alert(result.message || "Usuario eliminado con éxito."); // Muestra un alert de éxito
-        console.log("Usuario eliminado:", result);
-        navigate("/gestion-usuarios"); // Redirige a la pantalla de gestión de usuarios
-
+        setMensajeNotificacion(result.message || "Usuario eliminado con éxito.");
+        setTipoNotificacion("success");
+        setOpenNotificacion(true);
+        navigate("/gestion-usuarios");
       } catch (err) {
         console.error("Error al eliminar usuario:", err.message);
-        window.alert("Error al eliminar el usuario: " + err.message); // Muestra un alert de error
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        setMensajeNotificacion(err.message);
+        setTipoNotificacion("error");
+        setOpenNotificacion(true);
       }
-    } else {
-      // El usuario canceló la eliminación
-      console.log("Eliminación de usuario cancelada.");
-    }
+    });
+
+    setOpenPregunta(true);
   };
-  const handleDeleteVehicle = async (placasAEliminar) => {
-    const confirmDeleteVehicle = window.confirm(`¿Estás seguro de que quieres eliminar el vehículo con placas ${placasAEliminar}? Esta acción es irreversible.`);
 
-    if (confirmDeleteVehicle) {
-      setLoading(true); // Activa el estado de carga para la operación
-      setError(null);
-      
-
+  const handleDeleteVehicle = (placasAEliminar) => {
+    setMensajePregunta(`¿Deseas eliminar el vehículo con placas ${placasAEliminar}?`);
+    setAccionConfirmada(() => async () => {
       try {
         const response = await fetch(`http://localhost:4000/api/delete-vehicle`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            id_usuario: id, // ID del usuario actual de useParams
-            placas: placasAEliminar, // Placas del vehículo a eliminar
-          }),
+          body: JSON.stringify({ id_usuario: id, placas: placasAEliminar }),
         });
 
         if (!response.ok) {
@@ -184,21 +186,23 @@ const EdicionDeUsuarios = () => {
         }
 
         const result = await response.json();
-        window.alert(result.message || "Vehículo eliminado con éxito.");
-        console.log("Vehículo eliminado:", result);
+        setMensajeNotificacion(result.message || "Vehículo eliminado con éxito.");
+        setTipoNotificacion("success");
+        setOpenNotificacion(true);
 
-
+        // Actualiza lista de vehículos
+        setVehicleData((prev) => prev.filter((v) => v.placas !== placasAEliminar));
       } catch (err) {
         console.error("Error al eliminar vehículo:", err.message);
-        window.alert("Error al eliminar el vehículo: " + err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        setMensajeNotificacion(err.message);
+        setTipoNotificacion("error");
+        setOpenNotificacion(true);
       }
-    } else {
-      console.log("Eliminación de vehículo cancelada.");
-    }
+    });
+
+    setOpenPregunta(true);
   };
+
 
   return (
     <Box sx={{width:"100%", height:"100vh"}}>
@@ -483,6 +487,23 @@ const EdicionDeUsuarios = () => {
       </Paper>
     </Box>
     <AdminNav/>
+    <ModalPregunta
+      open={openPregunta}
+      onClose={() => setOpenPregunta(false)}
+      mensaje={mensajePregunta}
+      onConfirm={() => {
+        setOpenPregunta(false);
+        accionConfirmada();
+      }}
+    />
+
+    <ModalAccRealizada
+      open={openNotificacion}
+      onClose={() => setOpenNotificacion(false)}
+      mensaje={mensajeNotificacion}
+      tipo={tipoNotificacion}
+    />
+
     </Box>
   );
 };

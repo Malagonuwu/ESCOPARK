@@ -24,7 +24,7 @@ import AddEstacionamiento from "./pages/Administrador/AddEstacionamiento";
 import EditUsuario from "./pages/Administrador/EditUsuario";
 import Guardias from "./pages/Administrador/Guardias";
 import Usuarios from "./pages/Administrador/Usuarios";
-
+import EditEstacionamiento from "./pages/Administrador/EditEstacionamiento";
 // Rutas para vehículos
 import AddVehicle from "./pages/Vehiculo/AddVehicle";
 import EditVehicle from "./pages/Vehiculo/EditVehicle";
@@ -63,7 +63,7 @@ export default function App() {
         <Route path="/EditUsuario/:id" element={<EditUsuario />} />
         <Route path="/Guardias" element={<Guardias />} />
         <Route path="/Usuarios" element={<Usuarios />} />
-
+        <Route path="/EditEstacionamiento/:id" element={<EditEstacionamiento />} />
         {/* Ruta por defecto */}
         <Route path="/" element={<Login />} />
 

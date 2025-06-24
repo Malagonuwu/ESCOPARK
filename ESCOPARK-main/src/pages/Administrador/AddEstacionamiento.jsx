@@ -13,12 +13,24 @@ import {
 import React, { useState } from "react";
 import Header from "../../components/General/Header";
 import AdminNav from "../../components/General/AdminNav";
-
+//Importacion de modals
+import ModalPregunta from "./ModalPregunta.jsx";
+import ModalAccRealizada from "./ModalAccRealizada.jsx";
 const CrearEditar = () => {
   const [nombre, setNombre] = useState("");
   const [ubicacion, setUbicacion] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [tipo,setTipo] = useState("");
+  //Modals
+  // Para modal de confirmación
+  const [openPregunta, setOpenPregunta] = useState(false);
+  const [mensajePregunta, setMensajePregunta] = useState("");
+  const [accionConfirmada, setAccionConfirmada] = useState(() => () => {});
+
+  // Para modal de notificación
+  const [openNotificacion, setOpenNotificacion] = useState(false);
+  const [mensajeNotificacion, setMensajeNotificacion] = useState("");
+  const [tipoNotificacion, setTipoNotificacion] = useState("success"); // o "error"
   // State for form values
 
   const [capacity, setCapacity] = useState(50);
@@ -34,10 +46,11 @@ const CrearEditar = () => {
     const nuevoEstacionamiento = {
         Nombre:nombre,
         Tipo:tipo,
-        Capacidad:capacity[1],
+        Capacidad:capacity,
         Ubicacion:ubicacion,
         Descripcion:descripcion,      
       };
+      console.log(capacity);
 
     try {
       const response = await fetch("http://localhost:4000/api/crear-estacionamiento", {
@@ -54,19 +67,24 @@ const CrearEditar = () => {
       }
 
       const result = await response.json();
-      alert("Estacionamiento creado con éxito");
+      setMensajeNotificacion(result.message || "Vehículo eliminado con éxito.");
+      setTipoNotificacion("success");
+      setOpenNotificacion(true);
+
       console.log("Respuesta del servidor:", result);
 
       // Limpiar formulario
       setNombre("");
       setUbicacion("");
       setDescripcion("");
-      setCapacity([0, 100]);
+      setCapacity(50);
       setTipo("");
 
     } catch (err) {
       console.error("Error en la creación:", err);
-      setError(err.message); // Opcional: si tienes UI para mostrar errores
+      setMensajeNotificacion(err.message);
+      setTipoNotificacion("error");
+      setOpenNotificacion(true);
     } finally {
       setLoading(false); // Opcional
     }
@@ -264,6 +282,22 @@ const CrearEditar = () => {
         </Stack>
       </Container>
       <AdminNav></AdminNav>
+      <ModalPregunta
+        open={openPregunta}
+        onClose={() => setOpenPregunta(false)}
+        mensaje={mensajePregunta}
+        onConfirm={() => {
+          setOpenPregunta(false);
+          accionConfirmada();
+        }}
+      />
+      
+      <ModalAccRealizada
+        open={openNotificacion}
+        onClose={() => setOpenNotificacion(false)}
+        mensaje={mensajeNotificacion}
+        tipo={tipoNotificacion}
+      />
     </Box>
   );
 };

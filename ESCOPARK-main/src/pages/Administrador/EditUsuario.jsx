@@ -18,6 +18,9 @@ import React ,{ useEffect, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 
+import Header from "../../components/General/Header";
+import AdminNav from "../../components/General/AdminNav";
+
 // In a real implementation, these would be imported from your assets
 // Using placeholder URLs for demonstration
 const headerImage = "header.svg";
@@ -198,6 +201,11 @@ const EdicionDeUsuarios = () => {
   };
 
   return (
+    <Box sx={{width:"100%", height:"100vh"}}>
+      <Header sectionTitle="Estacionamientos"
+              userName="Administrador"
+              showAvatar={false}
+              backgroundColor="rgba(119, 2, 117, 0.77)"/>
     <Box
       sx={{
         bgcolor: "white",
@@ -216,72 +224,6 @@ const EdicionDeUsuarios = () => {
           bgcolor: "white",
         }}
       >
-        {/* Header */}
-        <Box
-          sx={{
-            width: "440px",
-            height: "179px",
-            position: "relative",
-            backgroundImage: "url(/aver-1.png)",
-            backgroundSize: "100% 100%",
-          }}
-        >
-          <Box
-            component="img"
-            src={headerImage}
-            alt="Header"
-            sx={{
-              width: "440px",
-              height: "72px",
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-          />
-
-          <Typography
-            variant="h6"
-            sx={{
-              position: "absolute",
-              top: "27px",
-              left: "20px",
-              fontFamily: "Orbitron-Bold, Helvetica",
-              fontWeight: "bold",
-              color: "white",
-              fontSize: "18px",
-            }}
-          >
-            Administrador
-          </Typography>
-
-          <Box
-            sx={{
-              position: "absolute",
-              top: "13px",
-              right: "70px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Avatar
-              src={avatarImage}
-              alt="User Avatar"
-              sx={{ width: 45, height: 45 }}
-            />
-            <Typography
-              sx={{
-                ml: 1,
-                color: "white",
-                fontFamily: "Inter-Regular, Helvetica",
-                fontSize: "15px",
-              }}
-            >
-              ad
-            </Typography>
-            <ArrowDropDownIcon sx={{ color: "white" }} />
-          </Box>
-        </Box>
-
         {/* Main Content */}
         <Container sx={{ mt: 4 }}>
           <Typography
@@ -411,14 +353,16 @@ const EdicionDeUsuarios = () => {
                 key={vehicle.id}
                 sx={{
                   display: "flex",
+                  flexDirection:"row",
+                  columnGap:"1rem",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  mb: 2,
+                  mb: 5,
                 }}
               >
                 <Card
                   sx={{
-                    width: "301px",
+                    width: "100%",
                     height: "46px",
                     borderRadius: "13px",
                     boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -492,10 +436,7 @@ const EdicionDeUsuarios = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between",
-              mt: 8,
-              mb: 4,
-              px: 2,
+              justifyContent: "space-between"
             }}
           >
             <Button
@@ -540,6 +481,8 @@ const EdicionDeUsuarios = () => {
           </Box>
         </Container>
       </Paper>
+    </Box>
+    <AdminNav/>
     </Box>
   );
 };

@@ -12,6 +12,9 @@ import {
 import React ,{ useEffect, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
+
+import Header from "../../components/General/Header";
+import AdminNav from "../../components/General/AdminNav";
 const formFields = [
   {
     id: "name",
@@ -118,154 +121,100 @@ const RegistroDePolicias = () => {
     }
   };
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", bgcolor: "white" }}>
-      <Container
-        maxWidth={false}
-        sx={{
-          width: "440px",
-          height: "956px",
-          position: "relative",
-          overflow: "hidden",
-          bgcolor: "white",
-          p: 0,
-        }}
-      >
-        {/* Header */}
-        <Box
+    <Box>
+        <Header sectionTitle="Estacionamientos"
+          userName="Administrador"
+          showAvatar={false}
+          backgroundColor="rgba(119, 2, 117, 0.77)"/>
+        <Box sx={{ display: "flex", justifyContent: "center", bgcolor: "white"}}>
+        
+
+        <Container
+          maxWidth={false}
           sx={{
-            width: "100%",
-            height: "179px",
+            width: "440px",
+            height: "956px",
             position: "relative",
-            background: "linear-gradient(to right, #770275, #3b0137)",
-            backgroundSize: "100% 100%",
+            overflow: "hidden",
+            bgcolor: "white",
+            p: 0,
           }}
         >
-          <Box
-            component="img"
-            sx={{
-              width: "100%",
-              height: "72px",
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-            alt="Header"
-            src="header.svg"
-          />
+          
 
+          {/* Form Title */}
           <Typography
             variant="h6"
             sx={{
-              position: "absolute",
-              top: "27px",
-              left: "20px",
+              mt: 2,
+              ml: 2.5,
               fontFamily: "Orbitron-Bold, Helvetica",
               fontWeight: "bold",
-              color: "white",
-              fontSize: "18px",
+              fontSize: "18px"
             }}
           >
-            Administrador
+            Registrar Nuevo Policia
           </Typography>
 
-          <Box
-            sx={{
-              position: "absolute",
-              top: "13px",
-              right: "20px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Avatar
-              src="image-3.png"
-              alt="User Avatar"
-              sx={{ width: 45, height: 45 }}
-            />
-            <Typography
+          <Divider sx={{ mt: 1, mx: 2 }} />
+
+          {/* Form Fields */}
+          <Stack spacing={2} sx={{ mt: 3, mx: 5 }}>
+            {formFields.map((field) => (
+              <Box key={field.id}>
+                <Typography
+                  sx={{
+                    fontFamily: "Orbitron-Bold, Helvetica",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    mb: 1,
+                  }}
+                >
+                  {field.label}
+                </Typography>
+                <TextField
+                  fullWidth
+                  placeholder={field.placeholder}
+                  type={field.type} 
+                  name={field.name} 
+                  value={formData[field.name]}
+                  onChange={handleChange} // Maneja los cambios del input
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                />
+              </Box>
+            ))}
+          </Stack>
+
+          {/* Register Button */}
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+            <Button
+              variant="contained"
               sx={{
-                fontFamily: "Inter-Regular, Helvetica",
-                color: "white",
-                fontSize: "15px",
-                ml: 1,
+                width: "160px",
+                height: "38px",
+                bgcolor: "#770275",
+                borderRadius: "13px",
+                fontFamily: "Orbitron-Bold, Helvetica",
+                fontWeight: "bold",
+                textTransform: "none",
+                fontSize: "16px",
+                boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)"
               }}
+              onClick={handleRegisterPolice}
             >
-              ad
-            </Typography>
-            <ArrowDropDownIcon sx={{ color: "white" }} />
+              Registrar
+            </Button>
           </Box>
+        </Container>
         </Box>
-
-        {/* Form Title */}
-        <Typography
-          variant="h6"
-          sx={{
-            mt: 2,
-            ml: 2.5,
-            fontFamily: "Orbitron-Bold, Helvetica",
-            fontWeight: "bold",
-            fontSize: "18px",
-          }}
-        >
-          Registrar Nuevo Policia
-        </Typography>
-
-        <Divider sx={{ mt: 1, mx: 2 }} />
-
-        {/* Form Fields */}
-        <Stack spacing={2} sx={{ mt: 3, mx: 5 }}>
-          {formFields.map((field) => (
-            <Box key={field.id}>
-              <Typography
-                sx={{
-                  fontFamily: "Orbitron-Bold, Helvetica",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  mb: 1,
-                }}
-              >
-                {field.label}
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder={field.placeholder}
-                type={field.type} 
-                name={field.name} 
-                value={formData[field.name]}
-                onChange={handleChange} // Maneja los cambios del input
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                  },
-                }}
-              />
-            </Box>
-          ))}
-        </Stack>
-
-        {/* Register Button */}
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-          <Button
-            variant="contained"
-            sx={{
-              width: "160px",
-              height: "38px",
-              bgcolor: "#770275",
-              borderRadius: "13px",
-              fontFamily: "Orbitron-Bold, Helvetica",
-              fontWeight: "bold",
-              textTransform: "none",
-              fontSize: "16px",
-              boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
-            }}
-            onClick={handleRegisterPolice}
-          >
-            Registrar
-          </Button>
-        </Box>
-      </Container>
+        <AdminNav/>
     </Box>
+    
   );
 };
 

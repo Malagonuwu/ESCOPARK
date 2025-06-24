@@ -17,6 +17,7 @@ import fondo from "../../assets/back.png";
 
 //Components
 import Header from "../../components/General/Header";
+import AdminNav from "../../components/General/AdminNav";
 import React, { useState,useEffect } from "react";
 // Mock data for parking spaces
 const parkingSpaces = [
@@ -59,7 +60,7 @@ const Estacionamientos = () => {
     <Container
       disableGutters
       sx={{
-        width: "412px",
+        width: "100%",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -145,7 +146,7 @@ const Estacionamientos = () => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            mt: 20,
+            mt: 10,
           }}
         >
           <Button
@@ -154,6 +155,7 @@ const Estacionamientos = () => {
               bgcolor: "#770275",
               borderRadius: "13px",
               textTransform: "none",
+              marginBottom:"2rem",
               py: 1.5,
               px: 3,
               boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -176,6 +178,7 @@ const Estacionamientos = () => {
           </Button>
         </Box>
       </Box>
+      <AdminNav></AdminNav>
     </Container>
   );
 };

@@ -21,7 +21,7 @@ import fondo from "../../assets/back.png";
 //Components
 import Header from "../../components/General/Header";
 import AdminNav from "../../components/General/AdminNav";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // Mock data for parking spaces
 const parkingSpaces = [
   {
@@ -55,12 +55,13 @@ const Estacionamientos = () => {
     navigate(`/EditEstacionamiento/${idEstacionamiento}`);
     handleClose();
   };
-    
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/get-estacionamiento");
+        const response = await fetch(
+          "http://localhost:4000/api/get-estacionamiento"
+        );
         if (!response.ok) {
           throw new Error("Error al obtener usuarios");
         }
@@ -113,53 +114,67 @@ const Estacionamientos = () => {
 
         <Divider sx={{ mb: 3 }} />
 
-        {/* Parking Spaces List */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          {estacionamientos.map((space) => (
-            <Card
-              key={space.idEstacionamiento}
-              sx={{
-                borderRadius: "13px",
-                boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
-                border: "0.1px solid rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
+        <Box
+          sx={{
+            overflow: "auto",
+            height: "calc(100vh - 500px)",
+            width: "100%",
+            marginTop: "1rem",
+          }}
+        >
+          {/* Parking Spaces List */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            {estacionamientos.map((space) => (
+              <Card
+                key={space.idEstacionamiento}
+                sx={{
+                  borderRadius: "13px",
+                  boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
+                  border: "0.1px solid rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+                  <Box
                     sx={{
-                      fontFamily: "Orbitron-Bold, Helvetica",
-                      fontWeight: "bold",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    {space.Nombre}
-                  </Typography>
-
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography
                       sx={{
-                        fontFamily: "Orbitron-Regular, Helvetica",
-                        fontSize: "11px",
-                        mr: 2,
+                        fontFamily: "Orbitron-Bold, Helvetica",
+                        fontWeight: "bold",
                       }}
                     >
-                      Disponible: {space.Capacidad}
+                      {space.Nombre}
                     </Typography>
 
-                    <IconButton size="small" onClick={(e) => handleMenuClick(e, space.idEstacionamiento)}>
-                      <MoreVertIcon />
-                    </IconButton>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Typography
+                        sx={{
+                          fontFamily: "Orbitron-Regular, Helvetica",
+                          fontSize: "11px",
+                          mr: 2,
+                        }}
+                      >
+                        Disponible: {space.Capacidad}
+                      </Typography>
+
+                      <IconButton
+                        size="small"
+                        onClick={(e) =>
+                          handleMenuClick(e, space.idEstacionamiento)
+                        }
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
         </Box>
 
         {/* Create New Parking Button */}
@@ -176,7 +191,7 @@ const Estacionamientos = () => {
               bgcolor: "#770275",
               borderRadius: "13px",
               textTransform: "none",
-              marginBottom:"2rem",
+              marginBottom: "2rem",
               py: 1.5,
               px: 3,
               boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -197,7 +212,6 @@ const Estacionamientos = () => {
             >
               Crear nuevo estacionamiento
             </Typography>
-            
           </Button>
         </Box>
       </Box>

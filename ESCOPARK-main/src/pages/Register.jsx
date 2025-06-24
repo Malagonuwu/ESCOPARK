@@ -108,11 +108,11 @@ const Register = () => {
           apellido_paterno: apellidoP,
           apellido_materno: apellidoM,
           numero_boleta: boleta,
-          carrera: career,  
+          carrera: career,
         },
       },
     });
-  
+
     if (error) {
       console.error("Error al registrar usuario:", error.message);
       alert("Error al registrar: " + error.message);
@@ -347,8 +347,8 @@ const Register = () => {
               </Select>
             </FormControl>
             {/* Boleta */}
-            <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-              <FormControl sx={{ flex: 1 }}>
+            <Box sx={{ mb: 2 }}>
+              <FormControl>
                 <Typography
                   sx={{
                     fontFamily: "Audiowide, sans-serif",
@@ -362,8 +362,9 @@ const Register = () => {
                 </Typography>
                 <TextField
                   sx={{
+                    width: "325px",
+                    height: "34px",
                     "& .MuiOutlinedInput-root": {
-                      height: "34px",
                       bgcolor: "white",
                       "& input": {
                         padding: "8px 16px",
@@ -381,20 +382,6 @@ const Register = () => {
                   value={boleta}
                   onChange={(e) => setBoleta(e.target.value)}
                 />
-              </FormControl>
-              <FormControl sx={{ flex: 1 }}>
-                <Typography
-                  sx={{
-                    fontFamily: "Audiowide, sans-serif",
-                    fontWeight: 400,
-                    color: "white",
-                    fontSize: "13px",
-                    mb: "2px",
-                  }}
-                >
-                  {/* Empty space to maintain layout */}
-                </Typography>
-                <Box sx={{ height: "36px" }}></Box>
               </FormControl>
             </Box>
             {/* Correo */}
@@ -472,10 +459,7 @@ const Register = () => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton
-                          size="small"
-                          onClick={toggleShowPassword}
-                        >
+                        <IconButton size="small" onClick={toggleShowPassword}>
                           {showPassword ? (
                             <VisibilityIcon sx={{ width: 20, height: 20 }} />
                           ) : (
@@ -694,7 +678,7 @@ const Register = () => {
         >
           <AcceptModal
             title="¡Registro exitoso!"
-            description="Bienvenido, tu cuenta ha sido registrada correctamente."
+            description="Revisa tu correo electrónico para verificar tu cuenta."
             label="Aceptar"
             onConfirm={() => {
               setShowAcceptModal(false);

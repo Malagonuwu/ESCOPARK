@@ -24,7 +24,7 @@ const EditEstacionamiento = () => {
   const [ubicacion, setUbicacion] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [capacidad, setCapacidad] = useState(50);
-  const [tipo,setTipo]= useState("");
+  const [tipo, setTipo] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,7 +40,9 @@ const EditEstacionamiento = () => {
   useEffect(() => {
     const fetchEstacionamiento = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/get-estacionamientoIndividual/${id}`);
+        const res = await fetch(
+          `http://localhost:4000/api/get-estacionamientoIndividual/${id}`
+        );
         if (!res.ok) throw new Error("Error al obtener estacionamiento");
         const data = await res.json();
         setNombre(data.Nombre);
@@ -60,11 +62,20 @@ const EditEstacionamiento = () => {
 
   const handleUpdateEstacionamiento = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/api/update-estacionamiento/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Nombre:nombre, Tipo:tipo,Capacidad:capacidad,Descripcion:descripcion,Ubicacion:ubicacion }),
-      });
+      const res = await fetch(
+        `http://localhost:4000/api/update-estacionamiento/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            Nombre: nombre,
+            Tipo: tipo,
+            Capacidad: capacidad,
+            Descripcion: descripcion,
+            Ubicacion: ubicacion,
+          }),
+        }
+      );
 
       if (!res.ok) throw new Error("Error al actualizar estacionamiento");
       setMensajeNotificacion("Estacionamiento actualizado correctamente");
@@ -78,12 +89,17 @@ const EditEstacionamiento = () => {
   };
 
   const handleDeleteEstacionamiento = () => {
-    setMensajePregunta("¿Estás seguro de que deseas eliminar este estacionamiento?");
+    setMensajePregunta(
+      "¿Estás seguro de que deseas eliminar este estacionamiento?"
+    );
     setAccionConfirmada(() => async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/delete-estacionamiento/${id}`, {
-          method: "DELETE",
-        });
+        const res = await fetch(
+          `http://localhost:4000/api/delete-estacionamiento/${id}`,
+          {
+            method: "DELETE",
+          }
+        );
 
         if (!res.ok) throw new Error("Error al eliminar estacionamiento");
         setMensajeNotificacion("Estacionamiento eliminado correctamente");
@@ -101,32 +117,98 @@ const EditEstacionamiento = () => {
 
   return (
     <Box>
-      <Header sectionTitle="Estacionamientos" userName="Administrador" showAvatar={false} backgroundColor="rgba(119, 2, 117, 0.77)" />
+      <Header
+        sectionTitle="Estacionamientos"
+        userName="Administrador"
+        showAvatar={false}
+        showBackgroundImage={false}
+        backgroundColor="rgb(119, 2, 117)"
+      />
       <Box sx={{ display: "flex", justifyContent: "center", bgcolor: "white" }}>
         <Paper elevation={0} sx={{ width: "440px", p: 3 }}>
-          <Typography variant="h6" sx={{ fontFamily: "Orbitron-Bold, Helvetica", fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontFamily: "Orbitron-Bold, Helvetica",
+              fontWeight: "bold",
+              mb: 2,
+            }}
+          >
             Editar Estacionamiento
           </Typography>
           <Divider sx={{ mb: 3 }} />
 
           <Stack spacing={3}>
-            <TextField label="Nombre" fullWidth value={nombre} onChange={(e) => setNombre(e.target.value)} />
-            <TextField label="Ubicación" fullWidth value={ubicacion} onChange={(e) => setUbicacion(e.target.value)} />
-            <TextField label="Tipo" fullWidth value={tipo} onChange={(e) => setTipo(e.target.value)} />
-            <TextField label="Descripción" fullWidth value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-            <TextField label="Capacidad" fullWidth type="number" value={capacidad} onChange={(e) => setCapacidad(Number(e.target.value))} />
+            <TextField
+              label="Nombre"
+              fullWidth
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+            <TextField
+              label="Ubicación"
+              fullWidth
+              value={ubicacion}
+              onChange={(e) => setUbicacion(e.target.value)}
+            />
+            <TextField
+              label="Tipo"
+              fullWidth
+              value={tipo}
+              onChange={(e) => setTipo(e.target.value)}
+            />
+            <TextField
+              label="Descripción"
+              fullWidth
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              multiline
+              minRows={4}
+            />
+            <TextField
+              label="Capacidad"
+              fullWidth
+              type="number"
+              value={capacidad}
+              onChange={(e) => setCapacidad(Number(e.target.value))}
+            />
           </Stack>
 
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
-            <Button variant="contained" sx={{ bgcolor: "#0090a4" }} onClick={handleUpdateEstacionamiento}>Guardar</Button>
-            <Button variant="contained" sx={{ bgcolor: "#770275" }} onClick={handleDeleteEstacionamiento}>Eliminar</Button>
+            <Button
+              variant="contained"
+              sx={{ bgcolor: "#0090a4" }}
+              onClick={handleUpdateEstacionamiento}
+            >
+              Guardar
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ bgcolor: "#770275" }}
+              onClick={handleDeleteEstacionamiento}
+            >
+              Eliminar
+            </Button>
           </Box>
         </Paper>
       </Box>
 
       <AdminNav />
-      <ModalPregunta open={openPregunta} onClose={() => setOpenPregunta(false)} mensaje={mensajePregunta} onConfirm={() => { setOpenPregunta(false); accionConfirmada(); }} />
-      <ModalAccRealizada open={openNotificacion} onClose={() => setOpenNotificacion(false)} mensaje={mensajeNotificacion} tipo={tipoNotificacion} />
+      <ModalPregunta
+        open={openPregunta}
+        onClose={() => setOpenPregunta(false)}
+        mensaje={mensajePregunta}
+        onConfirm={() => {
+          setOpenPregunta(false);
+          accionConfirmada();
+        }}
+      />
+      <ModalAccRealizada
+        open={openNotificacion}
+        onClose={() => setOpenNotificacion(false)}
+        mensaje={mensajeNotificacion}
+        tipo={tipoNotificacion}
+      />
     </Box>
   );
 };

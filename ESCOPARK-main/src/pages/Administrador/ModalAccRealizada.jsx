@@ -4,17 +4,16 @@ import {
   Typography,
   IconButton,
   Button,
-  Avatar,
+  Paper,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ErrorIcon from "@mui/icons-material/Error";
+import happy from "../../assets/happy.png";
 
 const ModalAccRealizada = ({
   open,
   onClose,
   mensaje = "Acción completada con éxito.",
   tipo = "success", // 'success' o 'error'
+  showImage = true,
 }) => {
   const esExito = tipo === "success";
 
@@ -26,71 +25,77 @@ const ModalAccRealizada = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 320,
-          bgcolor: "white",
-          borderRadius: 2,
-          boxShadow: 24,
-          p: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
+          width: "80%",
+          maxWidth: 500,
+          outline: "none",
         }}
       >
-        {/* Botón cerrar */}
-        <IconButton
-          onClick={onClose}
+        <Paper
+          elevation={0}
           sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            color: "grey.600",
+            borderRadius: "20px",
+            px: 1,
+            py: 1,
+            position: "relative",
           }}
         >
-          <CloseIcon />
-        </IconButton>
-
-        {/* Ícono de estado */}
-        <Avatar
-          sx={{
-            bgcolor: esExito ? "#007E33" : "#B00020",
-            width: 70,
-            height: 70,
-          }}
-        >
-          {esExito ? (
-            <CheckCircleIcon sx={{ fontSize: 40, color: "white" }} />
-          ) : (
-            <ErrorIcon sx={{ fontSize: 40, color: "white" }} />
-          )}
-        </Avatar>
-
-        {/* Mensaje */}
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          fontFamily="audiowide, sans-serif"
-          textAlign="center"
-        >
-          {mensaje}
-        </Typography>
-
-        {/* Botón OK */}
-        <Box mt={2} width="100%">
-          <Button
-            variant="contained"
-            onClick={onClose}
-            fullWidth
+          <Box
             sx={{
-              bgcolor: esExito ? "#007E33" : "#B00020",
-              "&:hover": {
-                bgcolor: esExito ? "#005C26" : "#8C001A",
-              },
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              textAlign: "center",
+              gap: 2,
             }}
           >
-            OK
-          </Button>
-        </Box>
+            {/* Contenido del mensaje y botón */}
+            <Box sx={{ flex: 1 }}>
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  fontFamily: "Inter, sans-serif",
+                  letterSpacing: "-0.3px",
+                  mb: 1,
+                }}
+              >
+                {mensaje}
+              </Typography>
+
+              <Box mt={2} display="flex" justifyContent="center">
+                <Button
+                  variant="contained"
+                  onClick={onClose}
+                  sx={{
+                    bgcolor: esExito ? "#007E33" : "#B00020",
+                    textTransform: "none",
+                    width: 100,
+                    height: 35,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    "&:hover": {
+                      bgcolor: esExito ? "#005C26" : "#8C001A",
+                    },
+                  }}
+                >
+                  OK
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Imagen */}
+            {showImage && (
+              <Box>
+                <Box
+                  component="img"
+                  src={happy}
+                  alt="Gatito feliz"
+                  sx={{ width: 119 }}
+                />
+              </Box>
+            )}
+          </Box>
+        </Paper>
       </Box>
     </Modal>
   );

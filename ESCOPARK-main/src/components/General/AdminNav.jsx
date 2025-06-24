@@ -1,4 +1,5 @@
 import { BottomNavigation, BottomNavigationAction, Box } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import LocalPoliceIcon from "@mui/icons-material/LocalPolice";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
@@ -7,14 +8,23 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const tabs = [
-  { label: "Usuarios", icon: <GroupIcon />, path: "/Usuarios" },
-  { label: "Guardias", icon: <LocalPoliceIcon />, path: "/Guardias" },
+  { label: "Inicio", icon: <HomeIcon />, paths: ["/home-administrativo"] },
+  {
+    label: "Usuarios",
+    icon: <GroupIcon />,
+    paths: ["/Usuarios", "/EditUsuario/:id"],
+  },
+  { label: "Guardias", icon: <LocalPoliceIcon />, paths: ["/Guardias"] },
   {
     label: "Estacionamientos",
     icon: <LocalParkingIcon />,
-    path: "/Estacionamientos",
+    paths: [
+      "/Estacionamientos",
+      "/EditEstacionamiento/:id",
+      "/AddEstacionamiento",
+    ],
   },
-  { label: "Salir", icon: <LogoutIcon />, path: "/Login" },
+  { label: "Salir", icon: <LogoutIcon />, paths: ["/Login"] },
 ];
 
 const NavegationBar = () => {
@@ -22,7 +32,13 @@ const NavegationBar = () => {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    const index = tabs.findIndex((tab) => tab.path === location.pathname);
+    const index = tabs.findIndex((tab) =>
+      tab.paths?.some((p) =>
+        p.includes(":")
+          ? location.pathname.startsWith(p.split("/:")[0])
+          : p === location.pathname
+      )
+    );
     if (index !== -1) {
       setValue(index);
     }
@@ -50,7 +66,7 @@ const NavegationBar = () => {
             label={tab.label}
             icon={tab.icon}
             component={Link}
-            to={tab.path}
+            to={tab.paths[0]}
             sx={{
               color: "white",
               "&.Mui-selected": {

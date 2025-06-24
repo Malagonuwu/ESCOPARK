@@ -7,9 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { useSession } from "@supabase/auth-helpers-react";
 
+import Header from "../../components/General/Header";
+import NavegationBar from "../../components/General/NavegationBar";
+
 const AddVehicle = () => {
   const navigate = useNavigate();
   const session = useSession();
+
+  const perfil = JSON.parse(localStorage.getItem("perfil") || "{}");
 
   const [form, setForm] = useState({
     Tipo_Vehiculo: "",
@@ -88,56 +93,65 @@ const AddVehicle = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2 }}>
-      
-      <FormControl required>
-        <InputLabel id="tipo-vehiculo-label">Tipo de Vehículo</InputLabel>
-        <Select
-          labelId="tipo-vehiculo-label"
-          name="Tipo_Vehiculo"
-          value={form.Tipo_Vehiculo}
-          label="Tipo de Vehículo"
-          onChange={handleChange}
-        >
-          <MenuItem value="Auto">Auto</MenuItem>
-          <MenuItem value="Moto">Moto</MenuItem>
-        </Select>
-      </FormControl>
-
-      <TextField label="Marca" name="Marca" value={form.Marca} onChange={handleChange} required />
-      <TextField label="Modelo" name="Modelo" value={form.Modelo} onChange={handleChange} required />
-      <TextField label="Placas" name="Placas" value={form.Placas} onChange={handleChange} required />
-      <TextField label="Color" name="Color" value={form.Color} onChange={handleChange} required />
-      <TextField
-        label="Características"
-        name="Caracteristicas"
-        value={form.Caracteristicas}
-        onChange={handleChange}
-        multiline
-        rows={3}
+    <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column",  justifyContent:"space-between",  height:"100vh"}}>
+      <Header
+              sectionTitle="Vehículos"
+              userName={`${perfil.nombres || "Usuario"} ${perfil.apellido_paterno || ""}`}
+              showBackgroundImage={false}
+              backgroundColor="#002250"
       />
+      <Box sx={{display:"flex", flexDirection:"column", rowGap:"1.5rem", p:"1rem"}}>
+          <FormControl required>
+          <InputLabel id="tipo-vehiculo-label">Tipo de Vehículo</InputLabel>
+          <Select
+            labelId="tipo-vehiculo-label"
+            name="Tipo_Vehiculo"
+            value={form.Tipo_Vehiculo}
+            label="Tipo de Vehículo"
+            onChange={handleChange}
+          >
+            <MenuItem value="Auto">Auto</MenuItem>
+            <MenuItem value="Moto">Moto</MenuItem>
+          </Select>
+        </FormControl>
 
-      {/* Carga de imagen */}
-      <Box>
-        <Typography variant="body2" mb={1}>Foto del Vehículo (opcional):</Typography>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        {form.Foto_Vehiculo && (
-          <Box mt={1}>
-            <Avatar
-              variant="rounded"
-              src={URL.createObjectURL(form.Foto_Vehiculo)}
-              sx={{ width: 100, height: 80 }}
-            />
-            <Typography variant="caption">{form.Foto_Vehiculo.name}</Typography>
-          </Box>
-        )}
+        <TextField label="Marca" name="Marca" value={form.Marca} onChange={handleChange} required />
+        <TextField label="Modelo" name="Modelo" value={form.Modelo} onChange={handleChange} required />
+        <TextField label="Placas" name="Placas" value={form.Placas} onChange={handleChange} required />
+        <TextField label="Color" name="Color" value={form.Color} onChange={handleChange} required />
+        <TextField
+          label="Características"
+          name="Caracteristicas"
+          value={form.Caracteristicas}
+          onChange={handleChange}
+          multiline
+          rows={3}
+        />
+
+        {/* Carga de imagen */}
+        <Box>
+          <Typography variant="body2" mb={1}>Foto del Vehículo (opcional):</Typography>
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+          {form.Foto_Vehiculo && (
+            <Box mt={1}>
+              <Avatar
+                variant="rounded"
+                src={URL.createObjectURL(form.Foto_Vehiculo)}
+                sx={{ width: 100, height: 80 }}
+              />
+              <Typography variant="caption">{form.Foto_Vehiculo.name}</Typography>
+            </Box>
+          )}
+        </Box>
+
+        {/* Botones */}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button type="submit" variant="contained">Guardar</Button>
+          <Button variant="outlined" onClick={() => navigate("/vehiculos")}>Cancelar</Button>
+        </Box>
       </Box>
 
-      {/* Botones */}
-      <Box sx={{ display: "flex", gap: 1 }}>
-        <Button type="submit" variant="contained">Guardar</Button>
-        <Button variant="outlined" onClick={() => navigate("/vehiculos")}>Cancelar</Button>
-      </Box>
+      <NavegationBar/>
     </Box>
   );
 };

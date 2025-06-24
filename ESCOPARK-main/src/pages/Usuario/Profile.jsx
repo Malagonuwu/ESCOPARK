@@ -107,7 +107,7 @@ const Profile = () => {
     <Container
       disableGutters
       sx={{
-        width: "412px",
+        width: "100%",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",

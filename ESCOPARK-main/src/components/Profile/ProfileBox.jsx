@@ -15,6 +15,7 @@ import {
   Star as StarIcon,
   Email as EmailIcon,
   VpnKey as VpnKeyIcon,
+  WrapText,
 } from "@mui/icons-material";
 
 import ProfileInfoItem from "./Datos";
@@ -136,17 +137,19 @@ const ProfileBox = () => {
   if (!userData) return <Typography>Cargando...</Typography>;
 
   return (
-    <Box sx={{ width: "80%", position: "relative", top: "-40px", left: "10%" }}>
+    <Box sx={{ width: "100%",mt:"3rem"}}>
       <Card
         sx={{
           position: "relative",
+          padding:"1rem",
+          margin:"0.5rem",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           borderRadius: "5px",
           border: "0.5px solid",
           borderColor: "grey.300",
-          boxShadow: "inset 0px 4px 4px rgba(0, 0, 0, 0.65)",
+          boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.65)",
           overflow: "visible",
         }}
       >
@@ -203,7 +206,7 @@ const ProfileBox = () => {
           {userData.role}
         </Typography>
         <Divider sx={{ width: "50%", my: 0.5 }} />
-        <Box sx={{ width: "100%", mt: 2, ml: 8.5 }}>
+        <Box sx={{ width: "100%", mt: 2, ml: 2}}>
           <ProfileInfoItem
             icon={<BookmarkIcon sx={{ color: "#0090a4", mr: 1 }} />}
             value={userData.department}
@@ -223,7 +226,7 @@ const ProfileBox = () => {
             value={userData.password}
           />
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", width: "100%", mt: 2, mb: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2, mb: 4 }}>
           <Link to="/EditProfile">
             <Button
               variant="contained"
@@ -233,7 +236,6 @@ const ProfileBox = () => {
                 fontFamily: "'Orbitron', sans-serif",
                 fontSize: 15,
                 height: 40,
-                mr: 5,
                 "&:hover": { bgcolor: "#0090a4" },
               }}
             >
